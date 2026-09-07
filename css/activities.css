@@ -1,0 +1,219 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+body{
+    background:#ececec;
+}
+/*================ NAVBAR =================*/
+
+header{
+    background:#fff;
+}
+nav{
+    width:90%;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    height:80px;
+}
+.logo img{
+    width:90px;
+}
+nav ul{
+    display:flex;
+    list-style:none;
+}
+nav ul li{
+    margin:0 22px;
+}
+nav ul li a{
+    text-decoration:none;
+    color:#777;
+    font-size:18px;
+    transition:.3s;
+}
+nav ul li a:hover,
+nav ul li a.active{
+    color:#000;
+    font-weight:600;
+}
+.right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+.flag{
+    width:32px;
+    cursor:pointer;
+}
+.right button{
+    background:#2b96ff;
+    color:#fff;
+    border:none;
+    padding:12px 28px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+.right button:hover{
+    background:#0f7de8;
+}
+/*================ HERO =================*/
+/* .hero{
+    height:620px;
+    background:url(images/banner.jpg) center center/cover no-repeat;
+    position:relative;
+} */
+.hero{
+    height:620px;
+    background:url("../images/banner1.png") center center;
+    background-size:cover;
+    background-repeat:no-repeat;
+    position:relative;
+}
+/*======================
+Activities
+======================*/
+.activities{
+    width:90%;
+    margin:auto;
+    padding:60px 0;
+}
+.activities h1{
+    text-align:center;
+    font-size:34px;
+    margin-bottom:20px;
+    letter-spacing:2px;
+}
+.intro{
+    width:70%;
+    margin:auto;
+    text-align:center;
+    color:#666;
+    line-height:28px;
+    margin-bottom:50px;
+}
+/*======================
+Cards
+======================*/
+.activity-container{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+}
+.card{
+    background:#eee;
+    overflow:hidden;
+    transition:.4s;
+}
+.card img{
+    width: 150px;
+    height: 90px;
+}
+.card:hover{
+    transform:translateY(-8px);
+}
+.card img{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+}
+.content{
+    padding:15px;
+}
+.content h3{
+    margin-bottom:8px;
+    font-size:20px;
+}
+.content h5{
+    color:#666;
+    margin-bottom:10px;
+}
+.content p{
+    color:#777;
+    font-size:14px;
+}
+
+/*======================
+Footer
+======================*/
+
+footer{
+
+    background:#f7f7f7;
+    margin-top:70px;
+    padding:40px 0;
+}
+.footer-container{
+    width:90%;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1fr 2fr 1.5fr 1.5fr;
+    gap:40px;
+}
+
+.logo{
+
+    width:100px;
+
+}
+
+.footer-box h3{
+
+    margin-bottom:20px;
+    font-size:20px;
+
+}
+
+.footer-box p{
+
+    margin-bottom:10px;
+    color:#555;
+    font-size:15px;
+
+}
+
+.buttons{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+
+}
+
+.buttons a{
+    text-decoration:none;
+    border:1px solid #888;
+    color:#000;
+    padding:8px 15px;
+    font-size:14px;
+}
+
+.social{
+    display:flex;
+    gap:20px;
+    font-size:22px;
+    color:#1b4f72;
+    margin:20px 0;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    background:#0f5c89;
+    color:white;
+    cursor:pointer;
+    margin-bottom:20px;
+}
+
+.payment{
+    display:flex;
+    gap:15px;
+    font-size:32px;
+    color:#1b4f72;
+}

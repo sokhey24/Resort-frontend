@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resort Website</title>
+    <link rel="stylesheet" href="css/styleaboutus.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="images/logoresort.png" alt="logo" data-cms="footer.logo">
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a id="chl-2" href="aboutus.html">About Us</a></li>
+                <li><a href="#">Activities</a></li>
+                <li><a href="#">Rooms</a></li>
+                <li><a href="#">Service</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </nav>
+
+        <button class="btn-book">Book Now</button>
+    </header>
+
+    <!-- Hero Carousel -->
+    <section class="hero">
+
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+
+        <div class="carousel-inner">
+
+            <div class="carousel-item active">
+                <img src="images/banner.jpg" class="d-block w-100" alt="" data-cms="banner.banner1">
+            </div>
+
+            <div class="carousel-item">
+                <img src="images/banner1.png" class="d-block w-100" alt="" data-cms="banner.banner2">
+            </div>
+
+            <div class="carousel-item">
+                <img src="images/massage.jpg" class="d-block w-100" alt="" data-cms="banner.banner3">
+            </div>
+
+        </div>
+
+        <button class="carousel-control-prev" type="button"
+            data-bs-target="#heroCarousel"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button class="carousel-control-next" type="button"
+            data-bs-target="#heroCarousel"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <h1 data-cms="hero.title">Welcome to Solara Resort</h1>
+            <p data-cms="hero.subtitle">Luxury beachfront resort with world-class amenities, pristine beaches, and unforgettable experiences.</p>
+        </div>
+
+    </div>
+
+</section>
+
+    <!-- About -->
+    <section class="about">
+        <div class="about-text">
+            <h2 data-cms="about.title">About Resort</h2>
+            <p data-cms="about.description">
+                Experience and comfort with beautiful ocean views,
+                modern facilities and unforgettable memories. Escape to
+                paradise where luxury meets nature.
+            </p>
+        </div>
+
+        <div class="about-image">
+            <img src="images/swimmingpool.jpg" alt="" data-cms="about.image">
+        </div>
+    </section>
+
+    <!-- Team -->
+    <section class="team-section">
+        <h2>Professional <span>individual</span></h2>
+
+        <div class="team-container">
+
+            <div class="card">
+                <img src="images/manager.jpg" alt="Manager" data-cms="team.member1_image">
+                <div class="info">
+                    <h3 data-cms="team.member1_name">Alex Johnson</h3>
+                    <p data-cms="team.member1_role">Resort Manager</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="images/housekeeping.jpg" alt="Housekeeping" data-cms="team.member2_image">
+                <div class="info">
+                    <h3 data-cms="team.member2_name">Cheng Dara</h3>
+                    <p data-cms="team.member2_role">Housekeeping Supervisor</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="images/fontdesk.jpg" alt="Front Desk" data-cms="team.member3_image">
+                <div class="info">
+                    <h3 data-cms="team.member3_name">Cheng Dara</h3>
+                    <p data-cms="team.member3_role">Front Desk Supervisor</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact">
+        <h2>Get In Touch</h2>
+
+        <div class="contact-container">
+
+            <div class="contact-info">
+                <h4>Contact Information</h4>
+                <p>Email: <span data-cms="contact.email">info@solararesort.com</span></p>
+                <p>Phone: <span data-cms="contact.phone">(+855) 78 888 090</span></p>
+                <p>Address: <span data-cms="contact.address">Cambodia</span></p>
+                <p>Check In : <span data-cms="footer.checkin">14:00</span></p>
+                <p>Check Out : <span data-cms="footer.checkout">12:00</span></p>
+                <p data-cms="footer.copyright">&copy; 2025 Solara Resort</p>
+            </div>
+
+            <form>
+                <input type="text" placeholder="Name">
+                <input type="email" placeholder="Email">
+                <textarea placeholder="Message"></textarea>
+                <button type="submit">Submit</button>
+            </form>
+
+        </div>
+    </section>
+
+<script src="script/api.js"></script>
+</body>
+
+</html>

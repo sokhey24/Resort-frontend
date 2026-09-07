@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/detailroom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <title>Detail Room</title>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="images/logoresort.png" alt="" data-cms="footer.logo">
+            </div>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="activities.html">Activities</a></li>
+                <li><a class="active" href="room.html">Room</a></li>
+                <li><a href="#">Service</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
+            </ul>
+            <div class="right">
+                <button>Register now</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <video class="vc-video" src="video/Short Video resort.mp4" autoplay muted playsinline loop></video>
+    </section>
+
+    <div class="container">
+
+        <!-- Image Gallery -->
+        <div class="gallery">
+            <button class="arrow left"><i class="fa-solid fa-chevron-left"></i></button>
+            <img src="images/room.jpg"  data-cms="roomdetail.image1">
+            <img src="images/room1.png" data-cms="roomdetail.image2">
+            <img src="images/room2.png" data-cms="roomdetail.image3">
+            <img src="images/room3.png" data-cms="roomdetail.image4">
+            <img src="images/room.jpg"  data-cms="roomdetail.image5">
+            <button class="arrow right"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="content">
+
+            <!-- Left -->
+            <div class="info">
+                <div class="item">
+                    <i class="fa-solid fa-tag"></i>
+                    <span data-cms="roomdetail.price">From $250 per night</span>
+                </div>
+                <div class="item">
+                    <i class="fa-solid fa-users"></i>
+                    <span data-cms="roomdetail.capacity">Sleep 4</span>
+                </div>
+                <div class="item">
+                    <i class="fa-solid fa-ruler-combined"></i>
+                    <span data-cms="roomdetail.size">65 sqm</span>
+                </div>
+                <div class="item">
+                    <i class="fa-solid fa-sun"></i>
+                    <span data-cms="roomdetail.view">Sunrise</span>
+                </div>
+                <button>Select Room</button>
+            </div>
+
+            <!-- Right -->
+            <div class="description">
+                <h2 data-cms="roomdetail.title">Our Junior Villa One Bedroom</h2>
+                <p data-cms="roomdetail.description"></p>
+            </div>
+
+        </div>
+
+        <!-- Booking -->
+        <div class="booking">
+            <div class="box">
+                <label>Select Dates</label>
+                <input type="text" placeholder="Tue, 7 July - Wed, 8 July">
+            </div>
+            <div class="box">
+                <label>Select Rooms</label>
+                <input type="text" placeholder="1 Room, 2 Guests">
+            </div>
+            <div class="promo">
+                <div>
+                    <label>Add Promo Code</label>
+                    <input type="text" placeholder="Promo Code">
+                </div>
+                <button>Apply</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-top">
+            <h2>GET IN TOUCH</h2>
+            <form>
+                <div class="row">
+                    <input type="text" placeholder="First Name">
+                    <input type="text" placeholder="Last Name">
+                </div>
+                <div class="row">
+                    <input type="email" placeholder="Email Address">
+                    <input type="text" placeholder="Phone Number">
+                </div>
+                <textarea placeholder="Message"></textarea>
+                <button type="submit">Submit Now</button>
+            </form>
+        </div>
+
+        <div class="footer-container">
+
+            <div class="footer-box">
+                <img src="images/logoresort.png" class="logo" data-cms="footer.logo">
+            </div>
+
+            <div class="footer-box">
+                <h3>Contact us directly</h3>
+                <p>Phone : <span data-cms="contact.phone">(+855) 78 888 090</span></p>
+                <p>Email : <span data-cms="contact.email">info@solararesort.com</span></p>
+                <p>Address : <span data-cms="contact.address">Cambodia</span></p>
+                <p>Check In : <span data-cms="footer.checkin">14:00</span></p>
+                <p>Check Out : <span data-cms="footer.checkout">12:00</span></p>
+                <p data-cms="footer.copyright">© 2025 Solara Resort</p>
+            </div>
+
+            <div class="footer-box">
+                <h3>Useful Links</h3>
+                <div class="buttons">
+                    <a href="home.html">Home</a>
+                    <a href="activities.html">Activities</a>
+                    <a href="room.html">Room</a>
+                    <a href="#">Service</a>
+                    <a href="aboutus.html">About Us</a>
+                </div>
+            </div>
+
+            <div class="footer-box">
+                <h3>Let's stay in touch</h3>
+                <div class="social">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-twitter"></i>
+                </div>
+                <button>Share the current page</button>
+                <h4>We Accept</h4>
+                <div class="payment">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-amex"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+<script src="script/api.js"></script>
+</body>
+</html>

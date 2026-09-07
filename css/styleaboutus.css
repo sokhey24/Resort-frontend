@@ -1,0 +1,444 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+}
+
+/* Header */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 50px;
+    background:#d8f1ef;
+}
+nav ul li:first-child a {
+    color: #d4a017;
+    font-weight: bold;
+}
+.hero{
+    position:relative;
+}
+
+.carousel-item img{
+    height:650px;
+    object-fit:cover;
+}
+
+.hero-content{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    color:white;
+    z-index:10;
+}
+
+.hero-content h1{
+    font-size:60px;
+    margin-bottom:15px;
+    text-shadow:2px 2px 10px rgba(0,0,0,0.5);
+}
+
+.hero-content p{
+    font-size:20px;
+    margin-bottom:25px;
+}
+
+.btn-start{
+    display:inline-block;
+    background:#3fb6d6;
+    color:white;
+    text-decoration:none;
+    padding:15px 35px;
+    border-radius:30px;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.btn-start:hover{
+    background:#2b9dbd;
+    color:white;
+    transform:translateY(-3px);
+}
+.logo img{
+    width:60px;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+}
+
+nav ul li{
+    margin:0 15px;
+}
+
+nav ul li a{
+    text-decoration:none;
+    color:#555;
+}
+
+.btn-book{
+    background:#3fb6d6;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    cursor:pointer;
+}
+
+/* Hero */
+
+.hero img{
+    width:100%;
+    height:500px;
+    object-fit:cover;
+}
+
+/* About */
+
+.about{
+    background:#eafaf8;
+    display:flex;
+    gap:30px;
+    padding:60px;
+    width: 80%;
+    align-items:center;
+    margin-left: 30px;
+    margin: 0 auto;
+    gap: 50px;
+}
+
+.about-text{
+    flex:1;
+}
+
+.about-image{
+    flex:2;
+    width: 70%;
+}
+
+.about-image img{
+    width:100%;
+    height: 380px;
+    margin-left: 40px;
+    
+}
+
+/* Professtional */
+.team-section{
+    width:90%;
+    margin:60px auto;
+    text-align:center;
+}
+
+.team-section h2{
+    font-size:48px;
+    font-weight:700;
+    margin-bottom:50px;
+}
+
+.team-section h2 span{
+    color:#c58b1c;
+}
+
+.team-container{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    flex-wrap:wrap;
+}
+
+.card{
+    position:relative;
+    width:270px;
+    height:420px;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+.card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.info{
+    position:absolute;
+    left:10px;
+    right:10px;
+    bottom:10px;
+    background:white;
+    border-radius:12px;
+    padding:12px;
+    text-align:center;
+}
+
+.info h3{
+    font-size:20px;
+    color:#111;
+    margin-bottom:5px;
+}
+
+.info p{
+    color:#777;
+    font-size:16px;
+    font-weight:600;
+}
+
+.accommodation{
+    width:90%;
+    margin:auto;
+    padding:50px 0;
+}
+
+/* Title */
+.title{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.title span{
+    color:#c58a1c;
+    font-weight:700;
+    font-size:20px;
+}
+
+.title h2{
+    font-size:55px;
+    margin-top:10px;
+}
+
+/* Rooms */
+.room-container{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:30px;
+}
+
+.room-card{
+    position:relative;
+    height:260px;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 3px 10px rgba(0,0,0,.2);
+}
+
+.room-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.room-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,.7),
+        rgba(0,0,0,.1)
+    );
+}
+
+.discount{
+    position:absolute;
+    top:12px;
+    left:12px;
+    background:#fff;
+    padding:6px 10px;
+    border-radius:5px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.room-info{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    color:#fff;
+}
+
+.room-info h3{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.details{
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+.price{
+    background:#fff;
+    color:#000;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+/* Facilities */
+.facility-container{
+    margin-top:80px;
+    display:flex;
+    justify-content:center;
+    gap:50px;
+    flex-wrap:wrap;
+}
+
+.facility-box{
+    width:220px;
+    height:150px;
+    border:1px solid #bcbcbc;
+    border-radius:10px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.facility-box i{
+    font-size:50px;
+    color:#c58a1c;
+    margin-bottom:15px;
+}
+
+.facility-box h4{
+    color:#c58a1c;
+    font-size:24px;
+}
+
+/* Responsive */
+@media(max-width:768px){
+
+    .room-container{
+        grid-template-columns:1fr;
+    }
+
+    .title h2{
+        font-size:40px;
+    }
+
+    .room-info h3{
+        font-size:28px;
+    }
+}
+
+/* Packages */
+
+.packages{
+    width: 100%;
+    height: auto;
+    /* padding:10px; */
+}
+
+.packages h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.package-container{
+    display:flex;
+    grid-template-columns:1fr 2fr 1fr;
+    gap:50px;
+}
+/* Contact */
+.pagekage-section{
+    text-align: center;
+    padding: 10px;
+   
+}
+.package-text{
+    display: flex;
+    gap: 10px;
+}
+.package-text img{
+    width: 38%;
+}
+.package-text p{
+    width: 37%;
+    padding: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+.package-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact{
+    background:#dff8f1;
+    padding:60px;
+}
+
+.contact h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.contact-container{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+}
+
+.contact-info{
+    width:40%;
+}
+
+form{
+    width:50%;
+}
+
+form input,
+form textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+}
+
+form button{
+    background:#3fb6d6;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    cursor:pointer;
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+    header{
+        flex-direction:column;
+    }
+
+    nav ul{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .about,
+    .contact-container,
+    .package-container{
+        flex-direction:column;
+        display:flex;
+    }
+
+    .gallery,
+    .grid,
+    .resort-gallery{
+        grid-template-columns:1fr;
+    }
+}
