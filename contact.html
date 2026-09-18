@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact · Solara Resort</title>
+  <script src="script/preferences-init.js"></script>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="contact">
+  <div id="site-header"></div>
+  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=80')">
+    <h1>Contact</h1>
+  </section>
+  <section class="section">
+    <div class="container grid-2">
+      <div class="card" style="padding:28px">
+        <h2 style="text-align:left">Front desk</h2>
+        <p>Phone: (+855) 78 888 090</p>
+        <p>Email: info@solararesort.com</p>
+        <p>Address: Coastal Road, Sihanoukville, Cambodia</p>
+        <p>Check-in 14:00 · Check-out 12:00</p>
+      </div>
+      <form class="card" data-source="contact-page" style="padding:28px">
+        <h2 style="text-align:left">Write to us</h2>
+        <div class="form-row">
+          <input class="field" name="firstName" placeholder="First name" required>
+          <input class="field" name="lastName" placeholder="Last name" required>
+        </div>
+        <input class="field" type="email" name="email" placeholder="Email" required style="margin-bottom:12px">
+        <textarea name="message" placeholder="Message" required></textarea>
+        <button class="btn btn-primary" type="submit">Send message</button>
+        <p class="hint" hidden></p>
+      </form>
+    </div>
+  </section>
+  <div id="site-footer"></div>
+  <script src="script/data.js"></script>
+  <script src="script/store.js"></script>
+  <script src="script/api.js"></script>
+  <script src="script/preferences.js"></script>
+  <script src="script/i18n.js"></script>
+  <script src="script/app.js"></script>
+</body>
+</html>

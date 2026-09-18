@@ -1,35 +1,29 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About · Solara Resort</title>
+  <title>Gallery · Solara Resort</title>
   <script src="script/preferences-init.js"></script>
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body data-page="about">
+<body data-page="gallery">
   <div id="site-header"></div>
-  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80')">
-    <h1>About Solara</h1>
+  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1800&q=80')">
+    <h1>Gallery</h1>
   </section>
   <section class="section">
-    <div class="container grid-2">
-      <div>
-        <div id="aboutStory"></div>
-      </div>
-      <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80" alt="Pool" style="border-radius:16px;height:340px;object-fit:cover;width:100%">
-    </div>
-  </section>
-  <section class="section" style="padding-top:0">
     <div class="container">
-      <h2>People on property</h2>
-      <p class="lead">Demo staff profiles for the about page.</p>
-      <div class="grid-3" id="teamGrid"></div>
+      <p class="lead">Click a photo to open it. Images are stock placeholders for the demo.</p>
+      <select class="field" id="galleryCat" style="max-width:260px;margin-bottom:20px" aria-label="Gallery category"></select>
+      <div class="gallery-grid" id="galleryGrid"></div>
     </div>
   </section>
+  <div class="modal" id="lightbox"><img id="lightboxImg" alt="Gallery photo" style="max-width:min(900px,92vw);max-height:80vh;border-radius:12px"></div>
   <div id="site-footer"></div>
   <script src="script/data.js"></script>
   <script src="script/store.js"></script>

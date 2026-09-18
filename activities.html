@@ -1,153 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solara Resort - Activities</title>
-    <link rel="stylesheet" href="css/activities.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activities · Solara Resort</title>
+  <script src="script/preferences-init.js"></script>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
-<body>
-
-    <!-- NAVBAR -->
-    <header>
-        <nav>
-            <div class="logo">
-                <img src="images/logo.png" alt="" data-cms="footer.logo">
-            </div>
-            <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a class="active" href="#">Activities</a></li>
-                <li><a href="room.html">Room</a></li>
-                <li><a href="#">Service</a></li>
-                <li><a href="aboutus.html">About Us</a></li>
-            </ul>
-            <div class="right">
-                <button>Register now</button>
-            </div>
-        </nav>
-    </header>
-
-    <!-- HERO -->
-    <section class="hero"></section>
-
-    <!-- ACTIVITIES -->
-    <section class="activities">
-
-        <h1 data-cms="activities.title">ACTIVITIES</h1>
-
-        <p class="intro" data-cms="activities.description">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Porro libero deleniti perspiciatis, consequatur dignissimos
-            accusantium magni harum doloribus officiis laboriosam.
-        </p>
-
-        <div class="activity-container">
-
-            <div class="card">
-                <img src="images/activity5.jpg" data-cms="activities.card1_image">
-                <div class="content">
-                    <h3 data-cms="activities.card1_title">Jet Ski Adventures</h3>
-                    <p data-cms="activities.card1_text">Ride the waves on our high-speed jet skis.</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="images/kayak.jpg" data-cms="activities.card2_image">
-                <div class="content">
-                    <h3 data-cms="activities.card2_title">Kayaking</h3>
-                    <p data-cms="activities.card2_text">Explore the coastline by kayak.</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="images/beach party.jpg" data-cms="activities.card3_image">
-                <div class="content">
-                    <h3 data-cms="activities.card3_title">Beach Party</h3>
-                    <p data-cms="activities.card3_text">Join our legendary beachside parties.</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="images/resorttour.jpg" data-cms="activities.card4_image">
-                <div class="content">
-                    <h3 data-cms="activities.card4_title">Resort Tour</h3>
-                    <p data-cms="activities.card4_text">Discover every corner of our resort.</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="images/waterpark.jpg" data-cms="activities.card5_image">
-                <div class="content">
-                    <h3 data-cms="activities.card5_title">Water Park</h3>
-                    <p data-cms="activities.card5_text">Splash and play at our water park.</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="images/swimmingpool.jpg" data-cms="activities.card6_image">
-                <div class="content">
-                    <h3 data-cms="activities.card6_title">Swimming Pool</h3>
-                    <p data-cms="activities.card6_text">Relax in our infinity swimming pool.</p>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-container">
-
-            <div class="footer-box">
-                <img src="images/logo.png" class="logo" data-cms="footer.logo">
-            </div>
-
-            <div class="footer-box">
-                <h3>Contact us directly</h3>
-                <p>Phone : <span data-cms="contact.phone">(+855) 78 888 090</span></p>
-                <p>Email : <span data-cms="contact.email">info@solararesort.com</span></p>
-                <p>Address : <span data-cms="contact.address">Cambodia</span></p>
-                <p>Check In : <span data-cms="footer.checkin">14:00</span></p>
-                <p>Check Out : <span data-cms="footer.checkout">12:00</span></p>
-                <p data-cms="footer.copyright">© 2025 Solara Resort</p>
-            </div>
-
-            <div class="footer-box">
-                <h3>Useful Links</h3>
-                <div class="buttons">
-                    <a href="home.html">Home</a>
-                    <a href="activities.html">Activities</a>
-                    <a href="room.html">Room</a>
-                    <a href="#">Service</a>
-                    <a href="aboutus.html">About Us</a>
-                </div>
-            </div>
-
-            <div class="footer-box">
-                <h3>Let's stay in touch</h3>
-                <div class="social">
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-twitter"></i>
-                </div>
-                <button>Share the current page</button>
-                <h4>We Accept</h4>
-                <div class="payment">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fab fa-cc-amex"></i>
-                    <i class="fab fa-cc-paypal"></i>
-                </div>
-            </div>
-
-        </div>
-    </footer>
-
-<script src="script/api.js"></script>
+<body data-page="activities">
+  <div id="site-header"></div>
+  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=80')">
+    <h1>Activities</h1>
+  </section>
+  <section class="section">
+    <div class="container">
+      <p class="lead">Experiences you can browse now. Activity reservations are requested through Contact — they are not restaurant or PMS orders.</p>
+      <div id="activityDetail"></div>
+      <select class="field" id="activityCat" style="max-width:260px;margin-bottom:20px" aria-label="Activity category"></select>
+      <div class="grid-3" id="activityGrid"></div>
+      <p style="text-align:center;margin-top:24px"><a class="btn btn-primary" href="contact.html">Contact to arrange an activity</a></p>
+    </div>
+  </section>
+  <div id="site-footer"></div>
+  <script src="script/data.js"></script>
+  <script src="script/store.js"></script>
+  <script src="script/api.js"></script>
+  <script src="script/preferences.js"></script>
+  <script src="script/i18n.js"></script>
+  <script src="script/app.js"></script>
+  <script src="script/content.js"></script>
 </body>
 </html>

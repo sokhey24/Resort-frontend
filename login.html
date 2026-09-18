@@ -3,18 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Room detail · Solara Resort</title>
+  <title>Login · Solara Resort</title>
   <script src="script/preferences-init.js"></script>
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body data-page="detail">
+<body data-page="login">
   <div id="site-header"></div>
-  <section class="section">
-    <div class="container detail-layout" id="roomDetail"></div>
-  </section>
+  <div class="auth-wrap">
+    <form class="auth-card" id="loginForm">
+      <h1>Guest login</h1>
+      <p>Demo session only. Credentials stay in this browser and are not Sanctum tokens.</p>
+      <p class="form-error" id="authError"></p>
+      <label>Email</label>
+      <input class="field" type="email" name="email" required>
+      <label>Password</label>
+      <input class="field" type="password" name="password" required>
+      <button class="btn btn-primary" type="submit">Login</button>
+      <p style="margin-top:14px">New guest? <a href="register.html">Create an account</a></p>
+    </form>
+  </div>
   <div id="site-footer"></div>
   <script src="script/data.js"></script>
   <script src="script/store.js"></script>
@@ -22,6 +32,6 @@
   <script src="script/preferences.js"></script>
   <script src="script/i18n.js"></script>
   <script src="script/app.js"></script>
-  <script src="script/rooms.js"></script>
+  <script src="script/auth.js"></script>
 </body>
 </html>

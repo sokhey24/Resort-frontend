@@ -1,232 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solara Resort</title>
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solara Resort</title>
+  <script src="script/preferences-init.js"></script>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body data-page="home">
+  <div id="site-header"></div>
 
-    <!-- NAVBAR -->
-    <header>
-        <nav>
-            <div class="logo">
-                <img src="images/logo.png" alt="" data-cms="footer.logo">
-            </div>
-            <ul>
-                <li><a class="active" href="#">Home</a></li>
-                <li><a href="activities.html">Activities</a></li>
-                <li><a href="room.html">Room</a></li>
-                <li><a href="#">Service</a></li>
-                <li><a href="aboutus.html">About Us</a></li>
-            </ul>
-            <div class="right">
-                <button>Register now</button>
-            </div>
-        </nav>
-    </header>
+  <section class="hero-banner">
+    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1800&q=80" alt="Solara Resort villas">
+    <div class="scrim"></div>
+    <div class="hero-copy">
+      <h1>Welcome to Solara Resort</h1>
+      <p>Beachfront villas, a calm spa, and a kitchen that cooks for the gulf. Book a stay on this guest site — reservations are saved in your browser until a hotel API is connected.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="booking.html">Book now</a>
+        <a class="btn btn-ghost" href="room.html">Explore rooms</a>
+      </div>
+    </div>
+  </section>
 
-    <!-- HERO -->
-    <section class="hero">
-        <video class="vc-video" src="video/Short Video resort.mp4" data-cms="hero.video" autoplay muted playsinline loop></video>
-        <div class="overlay">
-            <div class="hero-content">
-                <h1 data-cms="hero.title">Welcome to Solara Resort</h1>
-                <p data-cms="hero.subtitle">
-                    Luxury beachfront resort with world-class amenities,
-                    pristine beaches, and unforgettable experiences.
-                </p>
-                <a href="#" class="btn">Booking now!</a>
-            </div>
-        </div>
-    </section>
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <form class="search-widget" id="homeSearch">
+        <div><label>Check-in</label><input class="field" type="date" name="checkIn" required></div>
+        <div><label>Check-out</label><input class="field" type="date" name="checkOut" required></div>
+        <div><label>Adults</label><input class="field" type="number" name="adults" min="1" value="2" required></div>
+        <div><label>Children</label><input class="field" type="number" name="children" min="0" value="0" required></div>
+        <div><label>&nbsp;</label><button class="btn btn-primary" type="submit" style="width:100%">Search rooms</button></div>
+      </form>
+    </div>
+  </section>
 
-    <!-- ACTIVITIES PREVIEW -->
-    <section class="activities">
-        <h2>EXPLORE ACTIVITIES &amp; EXPERIENCES</h2>
-        <div class="card-container">
+  <section class="section home-preview">
+    <div class="container">
+      <h2>Featured rooms</h2>
+      <p class="lead">Villas and premium rooms guests book most often.</p>
+      <div class="grid-3" id="homeRooms"></div>
+      <p style="text-align:center;margin-top:22px"><a class="btn btn-ghost" href="room.html">All rooms</a></p>
+    </div>
+  </section>
 
-            <div class="card">
-                <img src="images/activity1.jpg" alt="" data-cms="activities.card1_image">
-                <div class="overlay1">
-                    <h3 data-cms="activities.card1_title">The Retreat</h3>
-                    <p data-cms="activities.card1_text">Where Time Slows Down</p>
-                    <a href="activities.html">More Information</a>
-                </div>
-            </div>
+  <section class="section home-preview">
+    <div class="container">
+      <h2>Resort activities</h2>
+      <p class="lead">Water, wellness, and slow evenings on the sand.</p>
+      <div class="grid-3" id="homeActivities"></div>
+      <p style="text-align:center;margin-top:22px"><a class="btn btn-ghost" href="activities.html">All activities</a></p>
+    </div>
+  </section>
 
-            <div class="card">
-                <img src="images/activity2.jpg" alt="" data-cms="activities.card2_image">
-                <div class="overlay1">
-                    <h3 data-cms="activities.card2_title">Luxury Spa</h3>
-                    <p data-cms="activities.card2_text">Relax your body and mind</p>
-                    <a href="activities.html">More Information</a>
-                </div>
-            </div>
+  <section class="section service-band">
+    <div class="container">
+      <h2>Resort services</h2>
+      <p class="lead" style="color:#e8eef5">Everything a guest needs without leaving the property.</p>
+      <div class="grid-4" id="homeServices"></div>
+      <p style="text-align:center;margin-top:22px"><a class="btn btn-ghost" href="services.html">All services</a></p>
+    </div>
+  </section>
 
-            <div class="card">
-                <img src="images/activity3.jpg" alt="" data-cms="activities.card3_image">
-                <div class="overlay1">
-                    <h3 data-cms="activities.card3_title">Ocean Adventure</h3>
-                    <p data-cms="activities.card3_text">Enjoy unforgettable experiences</p>
-                    <a href="activities.html">More Information</a>
-                </div>
-            </div>
+  <section class="section">
+    <div class="container">
+      <h2>Dining</h2>
+      <p class="lead">A preview of Gulf Kitchen breakfast.</p>
+      <div class="grid-3" id="homeDining"></div>
+      <p style="text-align:center;margin-top:22px"><a class="btn btn-ghost" href="dining.html">Full menu</a></p>
+    </div>
+  </section>
 
-        </div>
-    </section>
+  <section class="section">
+    <div class="container">
+      <h2>Gallery</h2>
+      <p class="lead">Rooms, water, and the gardens.</p>
+      <div class="gallery-grid" id="homeGallery"></div>
+    </div>
+  </section>
 
-    <!-- ROOMS PREVIEW -->
-    <section class="rooms">
-        <h2>CHOOSE YOUR PERFECT ROOM</h2>
-        <div class="room-container">
+  <section class="promo-band" id="homePromo"></section>
 
-            <div class="room">
-                <img src="images/room1.png" data-cms="rooms.card1_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card1_title">Junior Villa One Bedroom</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
+  <section class="section">
+    <div class="container">
+      <h2>Guest notes</h2>
+      <div class="grid-3" id="homeQuotes"></div>
+    </div>
+  </section>
 
-            <div class="room">
-                <img src="images/room2.png" data-cms="rooms.card2_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card2_title">Premium Triple Balcony Sea View</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
+  <section class="section">
+    <div class="container" style="text-align:center">
+      <h2>Need a hand?</h2>
+      <p class="lead">Write to the front desk or start a stay.</p>
+      <a class="btn btn-primary" href="contact.html">Contact the resort</a>
+    </div>
+  </section>
 
-            <div class="room">
-                <img src="images/room.jpg" data-cms="rooms.card3_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card3_title">Deluxe Twin Room</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-            <div class="room">
-                <img src="images/room3.png" data-cms="rooms.card4_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card4_title">Deluxe Double Room</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- SERVICE -->
-    <section class="service-section">
-        <div class="overlay-service">
-
-            <h5 data-cms="service.title">SERVICE</h5>
-            <div class="line"></div>
-            <p data-cms="service.description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Molestias nisi eligendi odit! Consequatur necessitatibus
-                quaerat inventore maiores.
-            </p>
-
-            <div class="service-container">
-
-                <div class="service-card">
-                    <i class="fa-solid fa-person-swimming"></i>
-                    <h3 data-cms="service.card1_title">Swimming Pool</h3>
-                    <p data-cms="service.card1_text">Take a dip into our infinity swimming pool.</p>
-                </div>
-
-                <div class="service-card">
-                    <i class="fa-solid fa-wifi"></i>
-                    <h3 data-cms="service.card2_title">Free Wi-Fi</h3>
-                    <p data-cms="service.card2_text">Offer free Wi-Fi throughout the resort.</p>
-                </div>
-
-                <div class="service-card">
-                    <i class="fa-solid fa-ship"></i>
-                    <h3 data-cms="service.card3_title">Ferry Service</h3>
-                    <p data-cms="service.card3_text">Ferry ticket arrangement is available here.</p>
-                </div>
-
-                <div class="service-card">
-                    <i class="fa-solid fa-martini-glass"></i>
-                    <h3 data-cms="service.card4_title">Food &amp; Drink</h3>
-                    <p data-cms="service.card4_text">Great offers on a range of food and drinks.</p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-
-        <div class="footer-top">
-            <h2>GET IN TOUCH</h2>
-            <form>
-                <div class="row">
-                    <input type="text" placeholder="First Name">
-                    <input type="text" placeholder="Last Name">
-                </div>
-                <div class="row">
-                    <input type="email" placeholder="Email Address">
-                    <input type="text" placeholder="Phone Number">
-                </div>
-                <textarea placeholder="Message"></textarea>
-                <button type="submit">Submit Now</button>
-            </form>
-        </div>
-
-        <div class="footer-container">
-
-            <div class="footer-box">
-                <img src="images/logo.png" class="logo" data-cms="footer.logo">
-            </div>
-
-            <div class="footer-box">
-                <h3>Contact us directly</h3>
-                <p>Phone : <span data-cms="contact.phone">(+855) 78 888 090</span></p>
-                <p>Email : <span data-cms="contact.email">info@solararesort.com</span></p>
-                <p>Address : <span data-cms="contact.address">Cambodia</span></p>
-                <p>Check In : <span data-cms="footer.checkin">14:00</span></p>
-                <p>Check Out : <span data-cms="footer.checkout">12:00</span></p>
-                <p data-cms="footer.copyright">© 2025 Solara Resort</p>
-            </div>
-
-            <div class="footer-box">
-                <h3>Useful Links</h3>
-                <div class="buttons">
-                    <a href="home.html">Home</a>
-                    <a href="activities.html">Activities</a>
-                    <a href="room.html">Room</a>
-                    <a href="#">Service</a>
-                    <a href="aboutus.html">About Us</a>
-                </div>
-            </div>
-
-            <div class="footer-box">
-                <h3>Let's stay in touch</h3>
-                <div class="social">
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-twitter"></i>
-                </div>
-                <button>Share the current page</button>
-                <h4>We Accept</h4>
-                <div class="payment">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fab fa-cc-amex"></i>
-                    <i class="fab fa-cc-paypal"></i>
-                </div>
-            </div>
-
-        </div>
-    </footer>
-
-<script src="script/api.js"></script>
+  <div id="site-footer"></div>
+  <script src="script/data.js"></script>
+  <script src="script/store.js"></script>
+  <script src="script/api.js"></script>
+  <script src="script/preferences.js"></script>
+  <script src="script/i18n.js"></script>
+  <script src="script/app.js"></script>
+  <script src="script/content.js"></script>
 </body>
 </html>

@@ -1,163 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solara Resort - Rooms</title>
-    <link rel="stylesheet" href="css/room.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rooms · Solara Resort</title>
+  <script src="script/preferences-init.js"></script>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
-<body>
-
-    <!-- NAVBAR -->
-    <header>
-        <nav>
-            <div class="logo">
-                <img src="images/logoresort.png" alt="" data-cms="footer.logo">
-            </div>
-            <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="activities.html">Activities</a></li>
-                <li><a class="active" href="#">Room</a></li>
-                <li><a href="#">Service</a></li>
-                <li><a href="aboutus.html">About Us</a></li>
-            </ul>
-            <div class="right">
-                <button>Register now</button>
-            </div>
-        </nav>
-    </header>
-
-    <!-- HERO -->
-    <section class="hero">
-        <video class="vc-video" src="video/Short Video resort.mp4" autoplay muted playsinline loop></video>
-    </section>
-
-    <section class="rooms">
-
-        <!-- Search -->
-        <div class="search-box">
-            <input type="text" placeholder="Search room...">
-            <button>Search</button>
-        </div>
-
-        <!-- Title -->
-        <div class="title">
-            <h2 data-cms="rooms.title">Captivating Rooms &amp; Suites</h2>
-            <p data-cms="rooms.description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Reprehenderit quia voluptate aspernatur minima consequatur
-                ducimus, distinctio quidem illum necessitatibus omnis.
-            </p>
-        </div>
-
-        <!-- Room Gallery -->
-        <div class="room-gallery">
-
-            <div class="room">
-                <img src="images/room1.png" data-cms="rooms.card1_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card1_title">Junior Villa One Bedroom</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-            <div class="room">
-                <img src="images/room2.png" data-cms="rooms.card2_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card2_title">Premium Triple Balcony Sea View</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-            <div class="room">
-                <img src="images/room2.png" data-cms="rooms.card3_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card3_title">Deluxe Twin Room</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-            <div class="room">
-                <img src="images/room3.png" data-cms="rooms.card4_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card4_title">Deluxe Double Room</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-            <div class="room">
-                <img src="images/room.jpg" data-cms="rooms.card5_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card5_title">Prince Villa 4 Bedrooms</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-            <div class="room">
-                <img src="images/room2.png" data-cms="rooms.card6_image">
-                <div class="content">
-                    <h3 data-cms="rooms.card6_title">Deluxe One Room</h3>
-                    <button>More Information</button>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-container">
-
-            <div class="footer-box">
-                <img src="images/logoresort.png" class="logo" data-cms="footer.logo">
-            </div>
-
-            <div class="footer-box">
-                <h3>Contact us directly</h3>
-                <p>Phone : <span data-cms="contact.phone">(+855) 78 888 090</span></p>
-                <p>Email : <span data-cms="contact.email">info@solararesort.com</span></p>
-                <p>Address : <span data-cms="contact.address">Cambodia</span></p>
-                <p>Check In : <span data-cms="footer.checkin">14:00</span></p>
-                <p>Check Out : <span data-cms="footer.checkout">12:00</span></p>
-                <p data-cms="footer.copyright">© 2025 Solara Resort</p>
-            </div>
-
-            <div class="footer-box">
-                <h3>Useful Links</h3>
-                <div class="buttons">
-                    <a href="home.html">Home</a>
-                    <a href="activities.html">Activities</a>
-                    <a href="room.html">Room</a>
-                    <a href="#">Service</a>
-                    <a href="aboutus.html">About Us</a>
-                </div>
-            </div>
-
-            <div class="footer-box">
-                <h3>Let's stay in touch</h3>
-                <div class="social">
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-twitter"></i>
-                </div>
-                <button>Share the current page</button>
-                <h4>We Accept</h4>
-                <div class="payment">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fab fa-cc-amex"></i>
-                    <i class="fab fa-cc-paypal"></i>
-                </div>
-            </div>
-
-        </div>
-    </footer>
-
-<script src="script/api.js"></script>
+<body data-page="rooms">
+  <div id="site-header"></div>
+  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1800&q=80')">
+    <h1>Captivating rooms & villas</h1>
+  </section>
+  <section class="section">
+    <div class="container">
+      <p class="lead">Search the guest catalogue. Availability here only checks other bookings saved in this browser.</p>
+      <div class="filter-grid">
+        <input class="field" id="roomSearch" placeholder="Search name, type, or code">
+        <input class="field" id="filterCheckIn" type="date" aria-label="Check-in">
+        <input class="field" id="filterCheckOut" type="date" aria-label="Check-out">
+        <select class="field" id="roomType">
+          <option value="">All room types</option>
+          <option>Villa</option>
+          <option>Premium</option>
+          <option>Deluxe</option>
+        </select>
+        <input class="field" id="minPrice" type="number" value="0" min="0" aria-label="Min price">
+        <input class="field" id="maxPrice" type="number" value="300" min="0" aria-label="Max price">
+        <select class="field" id="guestCount">
+          <option value="0">Any capacity</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="8">8+</option>
+        </select>
+        <select class="field" id="filterAdults">
+          <option value="0">Any adults</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="4">4+</option>
+        </select>
+        <select class="field" id="filterChildren">
+          <option value="0">Any children</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+        </select>
+        <select class="field" id="amenityFilter"></select>
+        <select class="field" id="sortRooms">
+          <option value="featured">Sort: featured</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+          <option value="rating">Rating</option>
+        </select>
+        <label class="check-line"><input type="checkbox" id="featuredOnly"> Featured only</label>
+        <button class="btn btn-outline" id="clearFilter" type="button">Clear filters</button>
+        <button class="btn btn-primary" id="searchRoomBtn" type="button">Search</button>
+      </div>
+      <input id="priceRange" type="range" min="100" max="300" value="300" style="width:100%" aria-label="Maximum price">
+      <div class="price-ticks"><span>$100</span><span>$150</span><span>$200</span><span>$300</span></div>
+      <div class="room-gallery" id="roomGallery"></div>
+      <p class="no-result" id="noResult">No rooms found for these filters.</p>
+      <p style="text-align:center;margin-top:20px"><button class="btn btn-outline" id="loadMore" type="button">Load more</button></p>
+    </div>
+  </section>
+  <div id="site-footer"></div>
+  <script src="script/data.js"></script>
+  <script src="script/store.js"></script>
+  <script src="script/api.js"></script>
+  <script src="script/preferences.js"></script>
+  <script src="script/i18n.js"></script>
+  <script src="script/app.js"></script>
+  <script src="script/rooms.js"></script>
 </body>
 </html>

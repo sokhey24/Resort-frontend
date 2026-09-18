@@ -25,10 +25,10 @@ nav{
 }
 
 .logo img{
-    width:90px;
+    width:50px;
 }
 
-nav ul{
+nav ul {
     display:flex;
     list-style:none;
 }

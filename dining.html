@@ -3,31 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About · Solara Resort</title>
+  <title>Dining · Solara Resort</title>
   <script src="script/preferences-init.js"></script>
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body data-page="about">
+<body data-page="dining">
   <div id="site-header"></div>
-  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80')">
-    <h1>About Solara</h1>
+  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1800&q=80')">
+    <h1>Dining</h1>
   </section>
   <section class="section">
-    <div class="container grid-2">
-      <div>
-        <div id="aboutStory"></div>
-      </div>
-      <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80" alt="Pool" style="border-radius:16px;height:340px;object-fit:cover;width:100%">
-    </div>
-  </section>
-  <section class="section" style="padding-top:0">
     <div class="container">
-      <h2>People on property</h2>
-      <p class="lead">Demo staff profiles for the about page.</p>
-      <div class="grid-3" id="teamGrid"></div>
+      <div id="diningInfo"></div>
+      <select class="field" id="menuCat" style="max-width:260px;margin:0 auto 20px;display:block" aria-label="Menu category"></select>
+      <div class="grid-3" id="menuGrid"></div>
+      <p style="text-align:center;margin-top:28px"><a class="btn btn-primary" href="contact.html">Ask for a table</a></p>
     </div>
   </section>
   <div id="site-footer"></div>
