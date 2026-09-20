@@ -1,6 +1,6 @@
 const GuestPrefs = {
   storageKey: "solara_prefs",
-  defaults: { theme: "light", lang: "en" },
+  defaults: { theme: "light", lang: "en", currency: "USD" },
 
   read() {
     try {
@@ -51,6 +51,19 @@ const GuestPrefs = {
         });
       }
     }
+    return value;
+  },
+
+  getCurrency() {
+    const code = this.read().currency;
+    const map = (typeof SolaraData !== "undefined" && SolaraData.currencies) || { USD: 1 };
+    return map[code] ? code : "USD";
+  },
+
+  setCurrency(code) {
+    const map = (typeof SolaraData !== "undefined" && SolaraData.currencies) || { USD: 1 };
+    const value = map[code] ? code : "USD";
+    this.write({ currency: value });
     return value;
   },
 
@@ -110,6 +123,15 @@ const GuestPrefs = {
     if (code) code.textContent = meta.code;
     document.querySelectorAll(".lang-menu button[data-lang]").forEach((el) => {
       el.classList.toggle("active", el.dataset.lang === lang);
+    });
+  },
+
+  syncCurrencyToggle() {
+    const code = this.getCurrency();
+    const label = document.getElementById("currencyCode");
+    if (label) label.textContent = code;
+    document.querySelectorAll(".currency-menu button[data-currency]").forEach((el) => {
+      el.classList.toggle("active", el.dataset.currency === code);
     });
   }
 };

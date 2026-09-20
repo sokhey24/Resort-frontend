@@ -2,6 +2,27 @@ function initContentPages() {
   const page = document.body.dataset.page;
 
   if (page === "home") {
+    // Agoda-style hero search + popular destinations + popular resorts
+    if (typeof SearchWidget !== "undefined") SearchWidget.render("heroSearch");
+    const chips = document.getElementById("popularDestinations");
+    if (chips) {
+      const cities = [...new Set(GuestAPI.catalog.resorts().map((r) => r.city))].slice(0, 6);
+      chips.innerHTML =
+        `<span class="popular-chips-label">Popular:</span>` +
+        cities
+          .map((c) => `<a class="chip" href="resorts.html?destination=${encodeURIComponent(c)}">${escapeHtml(c)}</a>`)
+          .join("");
+    }
+    const popular = document.getElementById("popularResorts");
+    if (popular && typeof resortCardMarkup === "function") {
+      popular.innerHTML = GuestAPI.catalog
+        .resorts()
+        .filter((r) => r.featured)
+        .slice(0, 3)
+        .map((r) => resortCardMarkup(r))
+        .join("");
+    }
+
     const acts = document.getElementById("homeActivities");
     const rooms = document.getElementById("homeRooms");
     const services = document.getElementById("homeServices");
@@ -76,11 +97,6 @@ function initContentPages() {
         .map((t) => `<article class="card pad"><p>“${escapeHtml(t.quote)}”</p><p><strong>${escapeHtml(t.name)}</strong> · ${t.rating}/5</p></article>`)
         .join("");
     }
-    document.getElementById("homeSearch")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(e.target).entries());
-      location.href = `room.html?${new URLSearchParams(data).toString()}`;
-    });
   }
 
   if (page === "activities") {

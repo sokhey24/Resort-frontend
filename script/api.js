@@ -6,8 +6,21 @@ function nightsBetween(checkIn, checkOut) {
   return diff > 0 ? diff : 0;
 }
 
+function currentCurrency() {
+  const code = (typeof GuestPrefs !== "undefined" && GuestPrefs.getCurrency && GuestPrefs.getCurrency()) || "USD";
+  const map = (typeof SolaraData !== "undefined" && SolaraData.currencies) || {};
+  return map[code] || { code: "USD", symbol: "$", rate: 1, decimals: 2 };
+}
+
+// Prices in the catalogue are stored in USD; format into the selected currency.
 function money(n) {
-  return `USD ${Number(n).toFixed(2)}`;
+  const cur = currentCurrency();
+  const value = Number(n) * cur.rate;
+  const formatted = value.toLocaleString("en-US", {
+    minimumFractionDigits: cur.decimals,
+    maximumFractionDigits: cur.decimals
+  });
+  return `${cur.symbol}${formatted}`;
 }
 
 function escapeHtml(value) {
@@ -27,8 +40,9 @@ function newId() {
 }
 
 function bookingCode() {
-  const chunk = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return `SLR-${chunk}`;
+  const year = new Date().getFullYear();
+  const serial = String(Math.floor(10000 + Math.random() * 89999));
+  return `RMS-${year}-${serial}`;
 }
 
 function datesOverlap(aStart, aEnd, bStart, bEnd) {
@@ -81,6 +95,37 @@ const GuestAPI = {
     },
     resort() {
       return SolaraData.resort;
+    },
+    facilities() {
+      return SolaraData.facilities || [];
+    },
+    facility(id) {
+      return (SolaraData.facilities || []).find((f) => f.id === id) || { id, name: id, icon: "fa-circle-check" };
+    },
+    // All resorts, each enriched with a cover image, gallery, room list and
+    // a computed "from" price so cards and filters have everything they need.
+    resorts() {
+      const allRooms = this.rooms();
+      return (SolaraData.resorts || []).map((resort) => {
+        const rooms = allRooms.filter((r) => r.resortId === resort.id);
+        const prices = rooms.map((r) => r.pricePerNight);
+        return {
+          ...resort,
+          image: resort.images[0],
+          gallery: resort.images,
+          rooms,
+          roomCount: rooms.length,
+          priceFrom: prices.length ? Math.min(...prices) : 0,
+          freeCancellation: rooms.some((r) => r.freeCancellation),
+          breakfast: rooms.some((r) => r.breakfastIncluded)
+        };
+      });
+    },
+    resortById(id) {
+      return this.resorts().find((r) => r.id === id) || null;
+    },
+    roomsByResort(id) {
+      return this.rooms().filter((r) => r.resortId === id);
     }
   },
 
@@ -235,6 +280,7 @@ const GuestAPI = {
       if (!session) return { ok: false, errors: ["Login or register with a guest account to book."] };
       const quote = GuestAPI.quote(form);
       if (quote.errors.length) return { ok: false, errors: quote.errors };
+      const resort = GuestAPI.catalog.resortById(quote.room.resortId);
       const booking = {
         id: newId(),
         code: bookingCode(),
@@ -242,7 +288,12 @@ const GuestAPI = {
         guestName: String(form.guestName || "").trim(),
         email: String(form.email || "").trim(),
         phone: String(form.phone || "").trim(),
+        country: String(form.country || "").trim(),
         note: String(form.note || "").trim(),
+        paymentMethod: String(form.paymentMethod || "pay-at-resort").trim(),
+        resortId: quote.room.resortId,
+        resortName: resort ? resort.name : "",
+        resortCity: resort ? resort.city : "",
         roomId: quote.room.id,
         roomName: quote.room.name,
         roomCode: quote.room.code,
@@ -344,6 +395,29 @@ const GuestAPI = {
         id: newId(),
         created_at: new Date().toISOString()
       });
+    }
+  },
+
+  // Temporary booking state carried between booking → payment → confirmation.
+  draft: {
+    key: "solara_booking_draft",
+    save(data) {
+      try {
+        localStorage.setItem(this.key, JSON.stringify(data));
+      } catch {
+        /* storage unavailable */
+      }
+      return data;
+    },
+    get() {
+      try {
+        return JSON.parse(localStorage.getItem(this.key) || "null");
+      } catch {
+        return null;
+      }
+    },
+    clear() {
+      localStorage.removeItem(this.key);
     }
   }
 };

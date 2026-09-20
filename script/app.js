@@ -1,27 +1,65 @@
-function navUtilitiesMarkup() {
-  const lang = typeof GuestPrefs !== "undefined" ? GuestPrefs.getLang() : "en";
-  const meta = I18n.langMeta(lang);
+function navThemeToggleMarkup() {
   const dark = typeof GuestPrefs !== "undefined" && GuestPrefs.getTheme() === "dark";
   return `
-    <div class="nav-utilities">
-      <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="${escapeHtml(I18n.t(dark ? "prefs.themeLight" : "prefs.themeDark"))}">
-        <i class="fa-solid ${dark ? "fa-sun" : "fa-moon"}" id="themeIcon" aria-hidden="true"></i>
+    <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="${escapeHtml(I18n.t(dark ? "prefs.themeLight" : "prefs.themeDark"))}">
+      <i class="fa-solid ${dark ? "fa-sun" : "fa-moon"}" id="themeIcon" aria-hidden="true"></i>
+    </button>`;
+}
+
+function navLangMarkup() {
+  const lang = typeof GuestPrefs !== "undefined" ? GuestPrefs.getLang() : "en";
+  const meta = I18n.langMeta(lang);
+  return `
+    <div class="nav-lang" id="navLang">
+      <button class="lang-btn" id="langToggle" type="button" aria-label="${escapeHtml(I18n.t("prefs.language"))}" aria-expanded="false" aria-haspopup="true">
+        <span class="lang-flag" aria-hidden="true">${I18n.flagImg(lang, { id: "langFlag" })}</span>
+        <span class="lang-code" id="langCode">${meta.code}</span>
+        <i class="fa-solid fa-chevron-down lang-chevron" aria-hidden="true"></i>
       </button>
-      <div class="nav-lang" id="navLang">
-        <button class="lang-btn" id="langToggle" type="button" aria-label="${escapeHtml(I18n.t("prefs.language"))}" aria-expanded="false" aria-haspopup="true">
-          <span class="lang-flag" aria-hidden="true">${I18n.flagImg(lang, { id: "langFlag" })}</span>
-          <span class="lang-code" id="langCode">${meta.code}</span>
-          <i class="fa-solid fa-chevron-down lang-chevron" aria-hidden="true"></i>
+      <div class="lang-menu" id="langMenu" role="menu">
+        <button type="button" role="menuitem" data-lang="en" class="${lang === "en" ? "active" : ""}">
+          <span class="lang-flag" aria-hidden="true">${I18n.flagImg("en")}</span> English
         </button>
-        <div class="lang-menu" id="langMenu" role="menu">
-          <button type="button" role="menuitem" data-lang="en" class="${lang === "en" ? "active" : ""}">
-            <span class="lang-flag" aria-hidden="true">${I18n.flagImg("en")}</span> English
-          </button>
-          <button type="button" role="menuitem" data-lang="km" class="${lang === "km" ? "active" : ""}">
-            <span class="lang-flag" aria-hidden="true">${I18n.flagImg("km")}</span> ភាសាខ្មែរ
-          </button>
-        </div>
+        <button type="button" role="menuitem" data-lang="km" class="${lang === "km" ? "active" : ""}">
+          <span class="lang-flag" aria-hidden="true">${I18n.flagImg("km")}</span> ភាសាខ្មែរ
+        </button>
       </div>
+    </div>`;
+}
+
+// Guests (no account) only get the dark/light toggle here; language and
+// currency selectors are reserved for signed-in guests.
+function navUtilitiesMarkup() {
+  const session = typeof GuestAPI !== "undefined" ? GuestAPI.auth.session() : null;
+  if (!session) {
+    return `<div class="nav-utilities">${navThemeToggleMarkup()}</div>`;
+  }
+  return `
+    <div class="nav-utilities">
+      ${navLangMarkup()}
+      ${navThemeToggleMarkup()}
+      ${navCurrencyMarkup()}
+    </div>`;
+}
+
+function navCurrencyMarkup() {
+  const current = typeof GuestPrefs !== "undefined" && GuestPrefs.getCurrency ? GuestPrefs.getCurrency() : "USD";
+  const currencies = (typeof SolaraData !== "undefined" && SolaraData.currencies) || { USD: { code: "USD", symbol: "$" } };
+  const options = Object.values(currencies)
+    .map(
+      (c) => `<button type="button" role="menuitem" data-currency="${c.code}" class="${c.code === current ? "active" : ""}">
+        <span class="cur-symbol" aria-hidden="true">${c.symbol}</span> ${c.code}
+      </button>`
+    )
+    .join("");
+  return `
+    <div class="nav-currency" id="navCurrency">
+      <button class="currency-btn" id="currencyToggle" type="button" aria-label="${escapeHtml(I18n.t("prefs.currency"))}" aria-expanded="false" aria-haspopup="true">
+        <i class="fa-solid fa-coins" aria-hidden="true"></i>
+        <span class="currency-code" id="currencyCode">${escapeHtml(current)}</span>
+        <i class="fa-solid fa-chevron-down lang-chevron" aria-hidden="true"></i>
+      </button>
+      <div class="currency-menu" id="currencyMenu" role="menu">${options}</div>
     </div>`;
 }
 
@@ -33,11 +71,14 @@ function navMarkup(active) {
   const initial = session ? escapeHtml((session.name || "G").charAt(0).toUpperCase()) : "G";
 
   const guestAuth = session
-    ? `<div class="nav-profile" id="navProfile">
+    ? `<a class="icon-btn nav-notif" href="account-notifications.html" aria-label="${escapeHtml(I18n.t("nav.notifications"))}" title="${escapeHtml(I18n.t("nav.notifications"))}">
+         <i class="fa-solid fa-bell" aria-hidden="true"></i>
+         ${unread ? `<span class="count-dot">${unread}</span>` : ""}
+       </a>
+       <div class="nav-profile" id="navProfile">
          <button class="profile-btn" id="profileToggle" type="button" aria-label="${escapeHtml(I18n.t("nav.profile"))}" aria-expanded="false">
            <span class="profile-avatar">${initial}</span>
            <span class="profile-name">${escapeHtml(session.name)}</span>
-           ${unread ? `<span class="count-dot">${unread}</span>` : ""}
          </button>
          <div class="profile-menu" id="profileMenu">
            <a href="account.html">${escapeHtml(I18n.t("nav.profile"))}</a>
@@ -62,15 +103,18 @@ function navMarkup(active) {
         <div class="nav-panel" id="navPanel">
           <ul class="nav-links">
             <li><a class="${active === "home.html" ? "active" : ""}" href="home.html">${escapeHtml(I18n.t("nav.home"))}</a></li>
+            <li><a class="${active === "resorts.html" || active === "resortdetail.html" ? "active" : ""}" href="resorts.html">${escapeHtml(I18n.t("nav.resorts"))}</a></li>
             <li><a class="${active === "room.html" ? "active" : ""}" href="room.html">${escapeHtml(I18n.t("nav.rooms"))}</a></li>
+            <li><a class="${active === "services.html" ? "active" : ""}" href="services.html">${escapeHtml(I18n.t("nav.facilities"))}</a></li>
+            <li><a class="${active === "dining.html" ? "active" : ""}" href="dining.html">${escapeHtml(I18n.t("nav.restaurant"))}</a></li>
             <li class="has-dropdown">
-              <a class="${serviceOpen ? "active" : ""}" href="services.html" id="serviceMenuBtn" aria-haspopup="true" aria-expanded="false">
+              <a class="${serviceOpen ? "active" : ""}" href="activities.html" id="serviceMenuBtn" aria-haspopup="true" aria-expanded="false">
                 ${escapeHtml(I18n.t("nav.service"))} <i class="fa-solid fa-chevron-down chevron" aria-hidden="true"></i>
               </a>
               <ul class="dropdown-menu">
                 <li><a class="${active === "activities.html" ? "active" : ""}" href="activities.html">${escapeHtml(I18n.t("nav.activity"))}</a></li>
-                <li><a class="${active === "dining.html" ? "active" : ""}" href="dining.html">${escapeHtml(I18n.t("nav.dining"))}</a></li>
                 <li><a class="${active === "gallery.html" ? "active" : ""}" href="gallery.html">${escapeHtml(I18n.t("nav.gallery"))}</a></li>
+                <li><a href="home.html#promotions">${escapeHtml(I18n.t("nav.promotions"))}</a></li>
               </ul>
             </li>
             <li><a class="${active === "aboutus.html" ? "active" : ""}" href="aboutus.html">${escapeHtml(I18n.t("nav.about"))}</a></li>
@@ -157,6 +201,8 @@ function currentPageKey() {
   const page = document.body.dataset.page || "";
   const map = {
     home: "home.html",
+    resorts: "resorts.html",
+    resortdetail: "resortdetail.html",
     rooms: "room.html",
     activities: "activities.html",
     services: "services.html",
@@ -165,6 +211,7 @@ function currentPageKey() {
     about: "aboutus.html",
     contact: "contact.html",
     booking: "booking.html",
+    payment: "payment.html",
     confirm: "booking-confirm.html",
     login: "login.html",
     register: "register.html",
@@ -244,6 +291,29 @@ function wireNavChrome() {
     });
   });
 
+  const navCurrency = document.getElementById("navCurrency");
+  const currencyToggle = document.getElementById("currencyToggle");
+  const closeCurrencyMenu = () => {
+    navCurrency?.classList.remove("open");
+    currencyToggle?.setAttribute("aria-expanded", "false");
+  };
+  currencyToggle?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = navCurrency.classList.toggle("open");
+    currencyToggle.setAttribute("aria-expanded", String(open));
+  });
+  navCurrency?.querySelectorAll(".currency-menu button[data-currency]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const code = btn.dataset.currency;
+      if (code !== GuestPrefs.getCurrency()) {
+        GuestPrefs.setCurrency(code);
+        location.reload();
+        return;
+      }
+      closeCurrencyMenu();
+    });
+  });
+
   const logoutBtn = document.getElementById("logoutBtn");
   logoutBtn?.addEventListener("click", () => {
     GuestAPI.auth.logout();
@@ -276,6 +346,13 @@ function wireShellFooterOnce() {
     if (navLang && !navLang.contains(e.target)) {
       navLang.classList.remove("open");
       langToggle?.setAttribute("aria-expanded", "false");
+    }
+
+    const navCurrency = document.getElementById("navCurrency");
+    const currencyToggle = document.getElementById("currencyToggle");
+    if (navCurrency && !navCurrency.contains(e.target)) {
+      navCurrency.classList.remove("open");
+      currencyToggle?.setAttribute("aria-expanded", "false");
     }
   });
 
@@ -321,6 +398,7 @@ function remountShell() {
   if (footer) footer.innerHTML = footerMarkup();
   GuestPrefs.syncThemeToggle();
   GuestPrefs.syncLangToggle();
+  GuestPrefs.syncCurrencyToggle();
   wireNavChrome();
   wireShareButton();
   I18n.applyStatic();

@@ -6,8 +6,8 @@
     if (prefs.theme === "dark") {
       document.documentElement.setAttribute("data-theme", "dark");
     }
-    if (prefs.lang === "km") {
-      document.documentElement.setAttribute("lang", "km");
+    if (prefs.lang === "KH") {
+      document.documentElement.setAttribute("lang", "KH");
     }
   } catch (_) {
     /* ignore */

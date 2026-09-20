@@ -348,3 +348,211 @@ const SolaraData = {
     values: ["Calm hospitality", "Local cooking", "Clear guest information", "Privacy for families"]
   }
 };
+
+/* ------------------------------------------------------------------ *
+ * Multi-resort layer (Agoda-inspired booking workflow, original RMS)
+ * Added on top of the existing single-property data so every legacy
+ * page keeps working while new pages get a full resort catalogue.
+ * ------------------------------------------------------------------ */
+
+// Display currencies for the header currency selector.
+SolaraData.currencies = {
+  USD: { code: "USD", symbol: "$", rate: 1, decimals: 2 },
+  KHR: { code: "KHR", symbol: "៛", rate: 4100, decimals: 0 }
+};
+
+// Facilities catalogue reused by resort cards, filters and detail pages.
+SolaraData.facilities = [
+  { id: "pool", name: "Swimming Pool", icon: "fa-person-swimming" },
+  { id: "wifi", name: "Free Wi-Fi", icon: "fa-wifi" },
+  { id: "restaurant", name: "Restaurant", icon: "fa-utensils" },
+  { id: "parking", name: "Free Parking", icon: "fa-square-parking" },
+  { id: "spa", name: "Spa", icon: "fa-spa" },
+  { id: "gym", name: "Fitness Center", icon: "fa-dumbbell" },
+  { id: "transfer", name: "Airport Transfer", icon: "fa-van-shuttle" },
+  { id: "breakfast", name: "Breakfast", icon: "fa-mug-saucer" },
+  { id: "beach", name: "Beachfront", icon: "fa-umbrella-beach" },
+  { id: "bar", name: "Bar", icon: "fa-martini-glass" }
+];
+
+// Assign each existing room to one of the new resorts.
+const _roomResortMap = {
+  "junior-villa": "sokha-beach",
+  "premium-sea": "ocean-breeze",
+  "deluxe-twin": "riverside-retreat",
+  "deluxe-double": "paradise-island",
+  "prince-villa": "mountain-view",
+  "deluxe-one": "sokha-beach"
+};
+SolaraData.rooms.forEach((room) => {
+  room.resortId = _roomResortMap[room.id] || "sokha-beach";
+  room.freeCancellation = room.pricePerNight <= 150;
+  room.breakfastIncluded = room.roomType === "Villa" || room.roomType === "Premium";
+  room.roomsLeft = ((room.pricePerNight % 4) + 2);
+});
+
+// Extra rooms so every resort has several room types (Deluxe, Superior,
+// Family, Villa, Suite). Kept compact but schema-compatible.
+const _img = {
+  deluxe: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80",
+  suite: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80",
+  family: "https://images.unsplash.com/photo-1566195992011-5f6b21e539aa?auto=format&fit=crop&w=1200&q=80",
+  superior: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80",
+  villa: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?auto=format&fit=crop&w=1200&q=80",
+  room: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80"
+};
+
+function _mkRoom(o) {
+  return {
+    id: o.id,
+    code: o.code,
+    name: o.name,
+    roomType: o.roomType,
+    resortId: o.resortId,
+    description: o.description,
+    pricePerNight: o.pricePerNight,
+    capacity: o.capacity,
+    adults: o.adults,
+    children: o.children,
+    size: o.size,
+    bedType: o.bedType,
+    amenities: o.amenities,
+    images: o.images,
+    rating: o.rating,
+    reviewCount: o.reviewCount,
+    longDescription: o.longDescription || o.description,
+    reviews: o.reviews || [{ name: "Verified guest", stars: Math.round(o.rating), text: "Clean room, friendly staff, would book again." }],
+    available: true,
+    featured: Boolean(o.featured),
+    freeCancellation: o.freeCancellation !== false,
+    breakfastIncluded: Boolean(o.breakfastIncluded),
+    roomsLeft: o.roomsLeft || 4
+  };
+}
+
+SolaraData.rooms.push(
+  _mkRoom({ id: "sokha-superior", code: "SB-SUP", name: "Superior Ocean Room", roomType: "Superior", resortId: "sokha-beach", description: "Bright room with a partial sea view and a walk-out balcony.", pricePerNight: 95, capacity: 2, adults: 2, children: 1, size: "32 sqm", bedType: "Queen", amenities: ["Balcony", "Wi-Fi", "Air conditioning", "Mini bar"], images: [_img.superior, _img.room], rating: 4.4, reviewCount: 58, breakfastIncluded: true }),
+  _mkRoom({ id: "sokha-family", code: "SB-FAM", name: "Family Beach Room", roomType: "Family", resortId: "sokha-beach", description: "Two double beds and space for the kids, steps from the sand.", pricePerNight: 165, capacity: 4, adults: 2, children: 2, size: "44 sqm", bedType: "2 Doubles", amenities: ["Sea view", "Wi-Fi", "Air conditioning", "Bathtub"], images: [_img.family, _img.room], rating: 4.6, reviewCount: 71, featured: true, breakfastIncluded: true }),
+  _mkRoom({ id: "river-superior", code: "RR-SUP", name: "Riverside Superior", roomType: "Superior", resortId: "riverside-retreat", description: "Calm river-facing room with a private reading nook.", pricePerNight: 88, capacity: 2, adults: 2, children: 0, size: "30 sqm", bedType: "Queen", amenities: ["River view", "Wi-Fi", "Air conditioning"], images: [_img.superior, _img.room], rating: 4.3, reviewCount: 42 }),
+  _mkRoom({ id: "river-family", code: "RR-FAM", name: "Riverside Family Suite", roomType: "Family", resortId: "riverside-retreat", description: "A two-room suite with a lounge overlooking the Kampot river.", pricePerNight: 175, capacity: 5, adults: 3, children: 2, size: "60 sqm", bedType: "King + 2 singles", amenities: ["River view", "Wi-Fi", "Kitchenette", "Balcony"], images: [_img.family, _img.suite], rating: 4.7, reviewCount: 39, featured: true, breakfastIncluded: true }),
+  _mkRoom({ id: "paradise-villa", code: "PI-VIL", name: "Overwater Villa", roomType: "Villa", resortId: "paradise-island", description: "Private overwater villa with a deck straight onto the lagoon.", pricePerNight: 320, capacity: 2, adults: 2, children: 0, size: "70 sqm", bedType: "King", amenities: ["Lagoon deck", "Wi-Fi", "Air conditioning", "Outdoor shower", "Mini bar"], images: [_img.villa, _img.suite], rating: 4.9, reviewCount: 88, featured: true, freeCancellation: false, breakfastIncluded: true }),
+  _mkRoom({ id: "paradise-suite", code: "PI-SUI", name: "Island Junior Suite", roomType: "Suite", resortId: "paradise-island", description: "Corner suite with a wraparound view of Koh Rong.", pricePerNight: 210, capacity: 3, adults: 2, children: 1, size: "52 sqm", bedType: "King", amenities: ["Sea view", "Wi-Fi", "Bathtub", "Lounge"], images: [_img.suite, _img.room], rating: 4.7, reviewCount: 46, breakfastIncluded: true }),
+  _mkRoom({ id: "mountain-deluxe", code: "MV-DLX", name: "Deluxe Mountain Room", roomType: "Deluxe", resortId: "mountain-view", description: "Warm timber room with a balcony over the Mondulkiri hills.", pricePerNight: 92, capacity: 2, adults: 2, children: 1, size: "34 sqm", bedType: "Queen", amenities: ["Mountain view", "Wi-Fi", "Heater", "Balcony"], images: [_img.deluxe, _img.room], rating: 4.5, reviewCount: 51, breakfastIncluded: true }),
+  _mkRoom({ id: "mountain-suite", code: "MV-SUI", name: "Highland Suite", roomType: "Suite", resortId: "mountain-view", description: "Suite with a fireplace lounge and panoramic valley windows.", pricePerNight: 185, capacity: 3, adults: 2, children: 1, size: "58 sqm", bedType: "King", amenities: ["Valley view", "Wi-Fi", "Fireplace", "Bathtub"], images: [_img.suite, _img.deluxe], rating: 4.8, reviewCount: 33, featured: true, freeCancellation: false, breakfastIncluded: true }),
+  _mkRoom({ id: "ocean-family", code: "OB-FAM", name: "Ocean Family Room", roomType: "Family", resortId: "ocean-breeze", description: "Spacious family room with bunk nook and a gulf-facing balcony.", pricePerNight: 155, capacity: 4, adults: 2, children: 2, size: "46 sqm", bedType: "King + bunk", amenities: ["Sea view", "Wi-Fi", "Air conditioning", "Balcony"], images: [_img.family, _img.room], rating: 4.5, reviewCount: 60, breakfastIncluded: true }),
+  _mkRoom({ id: "ocean-suite", code: "OB-SUI", name: "Breeze Panorama Suite", roomType: "Suite", resortId: "ocean-breeze", description: "Top-floor suite with a wide terrace facing the Kep coastline.", pricePerNight: 230, capacity: 3, adults: 2, children: 1, size: "62 sqm", bedType: "King", amenities: ["Panorama view", "Wi-Fi", "Bathtub", "Terrace", "Mini bar"], images: [_img.suite, _img.superior], rating: 4.9, reviewCount: 41, featured: true, freeCancellation: false, breakfastIncluded: true })
+);
+
+// The five resorts of the RMS network.
+SolaraData.resorts = [
+  {
+    id: "sokha-beach",
+    name: "Sokha Beach Resort",
+    city: "Sihanoukville",
+    country: "Cambodia",
+    address: "Coastal Road, Sihanoukville, Cambodia",
+    type: "Beachfront",
+    rating: 4.7,
+    reviewCount: 384,
+    stars: 5,
+    description: "A flagship beachfront resort with garden villas, an infinity pool, and direct access to a quiet stretch of gulf sand.",
+    tagline: "Beachfront villas on the gulf.",
+    facilities: ["pool", "wifi", "restaurant", "parking", "spa", "gym", "beach", "breakfast"],
+    images: [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1400&q=80"
+    ],
+    featured: true,
+    promoTag: "Save 10% with SOLARA10"
+  },
+  {
+    id: "riverside-retreat",
+    name: "Riverside Retreat",
+    city: "Kampot",
+    country: "Cambodia",
+    address: "River Lane, Kampot, Cambodia",
+    type: "Riverside",
+    rating: 4.5,
+    reviewCount: 212,
+    stars: 4,
+    description: "A calm riverside retreat framed by pepper farms, with hammock decks, kayaks, and slow sunset dinners on the water.",
+    tagline: "Slow days by the Kampot river.",
+    facilities: ["wifi", "restaurant", "parking", "spa", "breakfast", "bar"],
+    images: [
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1400&q=80"
+    ],
+    featured: true,
+    promoTag: "Free kayak with breakfast"
+  },
+  {
+    id: "paradise-island",
+    name: "Paradise Island Resort",
+    city: "Koh Rong",
+    country: "Cambodia",
+    address: "Long Beach, Koh Rong, Cambodia",
+    type: "Island",
+    rating: 4.8,
+    reviewCount: 297,
+    stars: 5,
+    description: "Overwater villas and a white-sand lagoon on Koh Rong, reached by a short resort ferry from the mainland.",
+    tagline: "Overwater villas on Koh Rong.",
+    facilities: ["pool", "wifi", "restaurant", "spa", "transfer", "beach", "breakfast", "bar"],
+    images: [
+      "https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1468413253725-0d5181091126?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1400&q=80"
+    ],
+    featured: true,
+    promoTag: "Stay 3, save 12% with STAY3"
+  },
+  {
+    id: "mountain-view",
+    name: "Mountain View Resort",
+    city: "Mondulkiri",
+    country: "Cambodia",
+    address: "Highland Road, Sen Monorom, Mondulkiri, Cambodia",
+    type: "Mountain",
+    rating: 4.6,
+    reviewCount: 148,
+    stars: 4,
+    description: "A cool highland lodge above pine valleys and waterfalls, with fireplaces, forest trails, and quiet nights.",
+    tagline: "Cool nights in the highlands.",
+    facilities: ["wifi", "restaurant", "parking", "gym", "breakfast", "bar"],
+    images: [
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1400&q=80"
+    ],
+    featured: false,
+    promoTag: "Family rate with FAMILY"
+  },
+  {
+    id: "ocean-breeze",
+    name: "Ocean Breeze Resort",
+    city: "Kep",
+    country: "Cambodia",
+    address: "Crab Market Road, Kep, Cambodia",
+    type: "Beachfront",
+    rating: 4.6,
+    reviewCount: 203,
+    stars: 4,
+    description: "A breezy coastal resort by the Kep crab market, with sea-view suites, a rooftop bar, and fresh seafood nightly.",
+    tagline: "Sea-view suites in Kep.",
+    facilities: ["pool", "wifi", "restaurant", "parking", "beach", "breakfast", "bar", "transfer"],
+    images: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80"
+    ],
+    featured: true,
+    promoTag: "Rooftop welcome drink"
+  }
+];

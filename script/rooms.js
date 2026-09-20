@@ -4,6 +4,7 @@ function params() {
 
 function roomCard(room) {
   const amen = (room.amenities || []).slice(0, 3).join(" · ");
+  const resort = typeof GuestAPI !== "undefined" ? GuestAPI.catalog.resortById(room.resortId) : null;
   return `
     <article class="room-card">
       <div class="room-card-media">
@@ -13,6 +14,7 @@ function roomCard(room) {
         <span class="room-tag">${escapeHtml(room.roomType)}</span>
         ${room.featured ? `<span class="room-tag featured">Featured</span>` : ""}
         <h3>${escapeHtml(room.name)}</h3>
+        ${resort ? `<p class="amen-line"><i class="fa-solid fa-hotel" aria-hidden="true"></i> ${escapeHtml(resort.name)} · ${escapeHtml(resort.city)}</p>` : ""}
         <p>${escapeHtml(room.description)}</p>
         <div class="meta">
           <span><i class="fa-solid fa-user"></i> ${room.capacity}</span>

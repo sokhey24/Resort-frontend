@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book a stay · Solara Resort</title>
+  <title>Review & guest details · Solara Resort</title>
   <script src="script/preferences-init.js"></script>
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/pages.css">
@@ -12,50 +12,81 @@
 </head>
 <body data-page="booking">
   <div id="site-header"></div>
-  <section class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1800&q=80')">
-    <h1>Reserve a room</h1>
-  </section>
+
   <section class="section">
-    <div class="container booking-layout">
-      <form class="booking-form" id="bookingForm">
-        <label>Room</label>
-        <select class="field" id="roomId" name="roomId" required></select>
-        <div class="form-row" style="margin-top:12px">
-          <div>
-            <label>Check-in</label>
-            <input class="field" type="date" id="checkIn" name="checkIn" required>
-          </div>
-          <div>
-            <label>Check-out</label>
-            <input class="field" type="date" id="checkOut" name="checkOut" required>
-          </div>
+    <div class="container">
+      <ol class="checkout-steps" aria-label="Booking progress">
+        <li class="active"><span>1</span> Your selection</li>
+        <li class="active"><span>2</span> Guest details</li>
+        <li><span>3</span> Payment</li>
+        <li><span>4</span> Confirmation</li>
+      </ol>
+
+      <div class="booking-layout">
+        <div class="booking-main">
+          <article class="info-card" id="bookingItem"></article>
+
+          <form class="info-card booking-form" id="bookingForm" novalidate>
+            <h2>Guest information</h2>
+            <p class="hint">Enter the details of the lead guest for this stay.</p>
+            <div class="form-row">
+              <div>
+                <label for="firstName">First name *</label>
+                <input class="field" id="firstName" name="firstName" autocomplete="given-name" required>
+                <p class="field-error" data-for="firstName"></p>
+              </div>
+              <div>
+                <label for="lastName">Last name *</label>
+                <input class="field" id="lastName" name="lastName" autocomplete="family-name" required>
+                <p class="field-error" data-for="lastName"></p>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label for="email">Email *</label>
+                <input class="field" id="email" type="email" name="email" autocomplete="email" required>
+                <p class="field-error" data-for="email"></p>
+              </div>
+              <div>
+                <label for="phone">Phone *</label>
+                <input class="field" id="phone" name="phone" inputmode="tel" autocomplete="tel" required>
+                <p class="field-error" data-for="phone"></p>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label for="country">Country / Region *</label>
+                <select class="field" id="country" name="country" required>
+                  <option value="">Select country</option>
+                  <option>Cambodia</option>
+                  <option>Thailand</option>
+                  <option>Vietnam</option>
+                  <option>Singapore</option>
+                  <option>Malaysia</option>
+                  <option>United States</option>
+                  <option>United Kingdom</option>
+                  <option>Australia</option>
+                  <option>China</option>
+                  <option>Japan</option>
+                  <option>Other</option>
+                </select>
+                <p class="field-error" data-for="country"></p>
+              </div>
+              <div>
+                <label for="promo">Promo code</label>
+                <input class="field" id="promo" name="promo" placeholder="SOLARA10, STAY3, FAMILY">
+              </div>
+            </div>
+            <label for="note">Special request</label>
+            <textarea id="note" name="note" placeholder="Arrival time, extra bed, dietary needs (subject to availability)"></textarea>
+          </form>
         </div>
-        <div class="form-row">
-          <div>
-            <label>Adults</label>
-            <input class="field" type="number" id="adults" name="adults" min="1" max="8" value="1" required>
-          </div>
-          <div>
-            <label>Children</label>
-            <input class="field" type="number" id="children" name="children" min="0" max="4" value="0" required>
-          </div>
-        </div>
-        <label>Promo code</label>
-        <input class="field" id="promo" name="promo" placeholder="SOLARA10, STAY3, FAMILY">
-        <label>Full name</label>
-        <input class="field" name="guestName" required>
-        <label>Email</label>
-        <input class="field" type="email" name="email" required>
-        <label>Phone</label>
-        <input class="field" name="phone" required>
-        <label>Note</label>
-        <textarea name="note" placeholder="Arrival time, extra bed, allergies"></textarea>
-        <button class="btn btn-primary" type="submit">Review booking</button>
-      </form>
-      <div id="reviewPanel" hidden class="booking-form"></div>
-      <aside class="summary-card" id="bookingSummary"></aside>
+
+        <aside class="summary-card sticky" id="bookingSummary"></aside>
+      </div>
     </div>
   </section>
+
   <div id="site-footer"></div>
   <script src="script/data.js"></script>
   <script src="script/store.js"></script>

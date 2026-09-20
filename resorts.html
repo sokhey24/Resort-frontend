@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search resorts · Solara Resort</title>
+  <script src="script/preferences-init.js"></script>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="resorts">
+  <div id="site-header"></div>
+
+  <section class="results-search-band">
+    <div class="container">
+      <div id="resortsSearch" class="hero-search"></div>
+    </div>
+  </section>
+
+  <section class="section results-section">
+    <div class="container">
+      <div class="results-topbar">
+        <p id="resultsSummary" class="results-summary" aria-live="polite"></p>
+        <div class="results-controls">
+          <button class="btn btn-outline filters-toggle" id="toggleFilters" type="button">
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filters
+          </button>
+          <label class="sort-label">
+            Sort by
+            <select class="field" id="sortSelect">
+              <option value="recommended">Recommended</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Rating</option>
+              <option value="reviews">Most Reviewed</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="results-layout">
+        <aside class="filter-sidebar" id="filterPanel"></aside>
+        <div class="results-main">
+          <div class="resort-grid list" id="resortResults"></div>
+          <div class="empty-state" id="resortEmpty" hidden>
+            <h3>No resorts match your filters</h3>
+            <p>Try widening your budget, removing facility filters, or searching a different destination.</p>
+            <a class="btn btn-primary" href="resorts.html">Reset search</a>
+          </div>
+          <p style="text-align:center;margin-top:24px">
+            <button class="btn btn-outline" id="loadMoreResorts" type="button">Show more resorts</button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="script/data.js"></script>
+  <script src="script/store.js"></script>
+  <script src="script/api.js"></script>
+  <script src="script/preferences.js"></script>
+  <script src="script/i18n.js"></script>
+  <script src="script/app.js"></script>
+  <script src="script/search.js"></script>
+  <script src="script/resorts.js"></script>
+</body>
+</html>

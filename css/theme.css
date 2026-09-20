@@ -108,22 +108,26 @@ button, input, select, textarea { font-family: inherit; }
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .nav-links > li { position: relative; }
 
 .nav-links a,
 .nav-links .has-dropdown > a {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  height: 42px;
+  line-height: 1;
   text-decoration: none;
   color: var(--nav-link);
   font-size: 16px;
   font-weight: 500;
-  padding: 8px 14px;
+  padding: 0 14px;
   transition: 0.3s;
 }
 
@@ -173,7 +177,12 @@ button, input, select, textarea { font-family: inherit; }
   transition: transform 0.2s ease;
 }
 
-.nav-profile { position: relative; }
+.nav-profile {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
 
 .profile-btn {
   position: relative;
@@ -185,6 +194,9 @@ button, input, select, textarea { font-family: inherit; }
   border-radius: 999px;
   padding: 4px 12px 4px 4px;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 100%;
 }
 
 .profile-avatar {
@@ -244,12 +256,20 @@ button, input, select, textarea { font-family: inherit; }
 .profile-menu a:hover,
 .profile-menu button:hover { background: var(--surface-muted); }
 
-.nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
 
 .nav-utilities {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .theme-toggle { flex-shrink: 0; }
@@ -338,9 +358,11 @@ button, input, select, textarea { font-family: inherit; }
 .nav-panel {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex: 1;
+  min-width: 0;
   justify-content: space-between;
+  flex-wrap: nowrap;
 }
 
 .site-nav { position: relative; }
@@ -758,7 +780,29 @@ html[data-theme="dark"] .btn-ghost { background: #21262d; }
     margin-top: 8px;
   }
   .nav-utilities { width: 100%; justify-content: flex-end; }
+  .site-nav.open .nav-panel { flex-wrap: wrap; }
+  .site-nav.open .nav-actions { flex-wrap: wrap; }
+  .site-nav.open .nav-links { flex-wrap: wrap; }
   .grid-3, .grid-4, .grid-2, .footer-grid, .form-row, .stat-grid, .search-widget, .filter-grid { grid-template-columns: 1fr; }
+}
+
+/* Desktop: one navbar row; action cluster never wraps under profile */
+@media (min-width: 981px) {
+  .site-nav {
+    flex-wrap: nowrap;
+  }
+  .logo {
+    flex-shrink: 0;
+  }
+  .nav-links a,
+  .nav-links .has-dropdown > a {
+    padding: 0 10px;
+    font-size: 15px;
+  }
+  .nav-actions .profile-name,
+  .profile-name {
+    max-width: 88px;
+  }
 }
 
 @media (max-width: 390px) {
