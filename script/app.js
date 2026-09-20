@@ -34,6 +34,11 @@ function navUtilitiesMarkup() {
   if (!session) {
     return `<div class="nav-utilities">${navThemeToggleMarkup()}</div>`;
   }
+  // return `
+  // <div class="nav-utilities">
+  //   ${navThemeToggleMarkup()}
+  //   ${navCurrencyMarkup()}
+  // </div>`;
   return `
     <div class="nav-utilities">
       ${navLangMarkup()}
