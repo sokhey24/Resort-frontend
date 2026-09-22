@@ -271,6 +271,7 @@ function wireNavChrome() {
   themeToggle?.addEventListener("click", () => {
     GuestPrefs.toggleTheme();
     GuestPrefs.syncThemeToggle();
+    if (typeof mountShell === "function") mountShell();
   });
 
   const navLang = document.getElementById("navLang");
@@ -320,8 +321,8 @@ function wireNavChrome() {
   });
 
   const logoutBtn = document.getElementById("logoutBtn");
-  logoutBtn?.addEventListener("click", () => {
-    GuestAPI.auth.logout();
+  logoutBtn?.addEventListener("click", async () => {
+    await GuestAPI.auth.logout();
     toast("Signed out");
     location.href = "home.html";
   });

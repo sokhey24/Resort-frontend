@@ -72,10 +72,10 @@ function renderBookingItem(room, resort, ctx) {
     </div>`;
 }
 
-function renderBookingSummary() {
+function renderBookingSummary(prequoted) {
   const box = document.getElementById("bookingSummary");
   if (!box) return;
-  const q = GuestAPI.quote(currentQuoteInput());
+  const q = prequoted || GuestAPI.quote(currentQuoteInput());
   if (!q.room) {
     box.innerHTML = emptyState("Choose a room", "Select a room to see pricing.", "resorts.html", "Browse resorts");
     return;
@@ -85,15 +85,27 @@ function renderBookingSummary() {
     <h3>Price summary</h3>
     <div class="price-lines">
       <div class="price-line"><span>${money(q.room.pricePerNight)} × ${q.nights || 0} night(s)</span><span>${money(q.subtotal)}</span></div>
-      ${q.discount ? `<div class="price-line discount"><span>Discount${q.promo ? ` (${escapeHtml(q.promo)})` : ""}</span><span>− ${money(q.discount)}</span></div>` : ""}
+      ${q.roomDiscount ? `<div class="price-line discount"><span>Room discount (${q.discountPercent}%)</span><span>− ${money(q.roomDiscount)}</span></div>` : ""}
+      ${q.couponDiscount ? `<div class="price-line discount"><span>Promo${q.promo ? ` (${escapeHtml(q.promo)})` : ""}</span><span>− ${money(q.couponDiscount)}</span></div>` : ""}
+      ${q.discount ? `<div class="price-line"><span>Discounted subtotal</span><span>${money(q.afterDiscount)}</span></div>` : ""}
       <div class="price-line"><span>Service charge (10%)</span><span>${money(q.serviceCharge)}</span></div>
       <div class="price-line"><span>Tax (10%)</span><span>${money(q.tax)}</span></div>
       <div class="price-line total"><span>Total</span><span>${money(q.total)}</span></div>
     </div>
     ${err}
     <button class="btn btn-primary" type="button" id="continuePayment" ${q.errors.length ? "disabled" : ""}>Continue to Payment</button>
-    <p class="hint">You won't be charged yet. Payment is simulated on this demo site.</p>`;
+    <p class="hint">You won't be charged yet. The final total is confirmed by the resort system.</p>`;
   document.getElementById("continuePayment")?.addEventListener("click", handleContinue);
+}
+
+/** Replace the instant preview with the server's authoritative numbers. */
+function refreshAuthoritativeSummary() {
+  GuestAPI.quoteAuthoritative(currentQuoteInput()).then((q) => {
+    if (!q.authoritative || !q.room) return;
+    const box = document.getElementById("bookingSummary");
+    if (!box) return;
+    renderBookingSummary(q);
+  });
 }
 
 function setFieldError(name, message) {
@@ -123,11 +135,13 @@ function bookingReturnUrl() {
   return `login.html?next=${encodeURIComponent(page)}`;
 }
 
-function handleContinue() {
-  const quote = GuestAPI.quote(currentQuoteInput());
+async function handleContinue() {
+  // Ask the API before moving on, so availability and pricing are confirmed
+  // by the resort system rather than by this browser.
+  const quote = await GuestAPI.quoteAuthoritative(currentQuoteInput());
   if (quote.errors.length) {
     toast(quote.errors[0]);
-    renderBookingSummary();
+    renderBookingSummary(quote.room ? quote : undefined);
     return;
   }
   if (!validateGuestForm()) {
@@ -208,7 +222,11 @@ function initBookingPage() {
   }
 
   renderBookingSummary();
-  document.getElementById("promo")?.addEventListener("input", renderBookingSummary);
+  refreshAuthoritativeSummary();
+  document.getElementById("promo")?.addEventListener("input", () => {
+    renderBookingSummary();
+    refreshAuthoritativeSummary();
+  });
   ["firstName", "lastName", "email", "phone", "country"].forEach((id) => {
     document.getElementById(id)?.addEventListener("blur", validateGuestForm);
   });
@@ -329,6 +347,10 @@ function downloadConfirmation(b) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initBookingPage();
-  initConfirmPage();
+  // Hydrate the catalogue from Laravel before the first render; data.js is only
+  // used if the API cannot be reached.
+  GuestAPI.ready().finally(() => {
+    initBookingPage();
+    initConfirmPage();
+  });
 });

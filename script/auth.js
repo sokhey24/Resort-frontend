@@ -23,6 +23,13 @@ function profileCompletion(user) {
 }
 
 function initAuthPages() {
+  if (location.protocol === "file:") {
+    const msg =
+      "Open this site through http://localhost (XAMPP or VS Code Live Server), not as a file. Registration needs the Laravel API at http://127.0.0.1:8000.";
+    const err = document.getElementById("authError");
+    if (err) err.textContent = msg;
+  }
+
   const next = new URLSearchParams(location.search).get("next");
   if (next) {
     document.querySelectorAll('a[href="register.html"], a[href="login.html"]').forEach((a) => {
@@ -33,7 +40,7 @@ function initAuthPages() {
   const registerForm = document.getElementById("registerForm");
 
   if (registerForm) {
-    registerForm.addEventListener("submit", (e) => {
+    registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(registerForm).entries());
       const err = document.getElementById("authError");
@@ -42,23 +49,29 @@ function initAuthPages() {
         toast("Passwords do not match");
         return;
       }
-      const result = GuestAPI.auth.register(data);
+      const btn = registerForm.querySelector('button[type="submit"]');
+      if (btn) btn.disabled = true;
+      const result = await GuestAPI.auth.register(data);
+      if (btn) btn.disabled = false;
       if (!result.ok) {
         if (err) err.textContent = result.error;
         toast(result.error);
         return;
       }
-      toast("Account created on this device");
+      toast("Account created");
       location.href = guestNextPage();
     });
   }
 
   if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(loginForm).entries());
-      const result = GuestAPI.auth.login(data);
       const err = document.getElementById("authError");
+      const btn = loginForm.querySelector('button[type="submit"]');
+      if (btn) btn.disabled = true;
+      const result = await GuestAPI.auth.login(data);
+      if (btn) btn.disabled = false;
       if (!result.ok) {
         if (err) err.textContent = result.error;
         toast(result.error);
@@ -70,11 +83,12 @@ function initAuthPages() {
   }
 }
 
-function initAccountDashboard() {
+async function initAccountDashboard() {
   const root = document.getElementById("accountRoot");
   if (!root) return;
   const session = GuestAPI.auth.requireSession();
   if (!session) return;
+  await GuestAPI.bookings.refresh();
   const user = GuestAPI.auth.currentUser();
   const bookings = GuestAPI.bookings.mine();
   const today = new Date().toISOString().slice(0, 10);
@@ -85,7 +99,7 @@ function initAccountDashboard() {
       <div class="container">
         ${accountNav("account.html")}
         <h2>Hello, ${escapeHtml(session.name)}</h2>
-        <p class="lead">Your guest profile on this browser. Book a room and it will appear in My bookings.</p>
+        <p class="lead">Your guest account is linked to the resort system. Book a room and it will appear in My bookings.</p>
         <p style="text-align:center;margin-bottom:24px">
           <a class="btn btn-primary" href="booking.html">Book a room</a>
           <a class="btn btn-ghost" href="room.html">Browse rooms</a>
@@ -133,10 +147,11 @@ function bookingRow(b) {
   </article>`;
 }
 
-function initAccountBookings() {
+async function initAccountBookings() {
   const root = document.getElementById("bookingsRoot");
   if (!root) return;
   if (!GuestAPI.auth.requireSession()) return;
+  await GuestAPI.bookings.refresh();
   const list = GuestAPI.bookings.mine();
   const today = new Date().toISOString().slice(0, 10);
   const render = () => {
@@ -147,7 +162,7 @@ function initAccountBookings() {
     root.querySelector("#bookingLists").innerHTML = filtered.length
       ? `<h3>Upcoming</h3>${upcoming.map(bookingRow).join("") || "<p>None.</p>"}
          <h3>Past</h3>${past.map(bookingRow).join("") || "<p>None.</p>"}`
-      : emptyState("No bookings", "Reservations you confirm on this device will appear here.", "room.html", "Find a room");
+      : emptyState("No bookings", "Reservations linked to your account will appear here after you book.", "room.html", "Find a room");
   };
   root.innerHTML = `
     <section class="section"><div class="container">
@@ -163,12 +178,13 @@ function initAccountBookings() {
   render();
 }
 
-function initAccountBookingDetail() {
+async function initAccountBookingDetail() {
   const root = document.getElementById("bookingDetailRoot");
   if (!root) return;
   if (!GuestAPI.auth.requireSession()) return;
   const id = new URLSearchParams(location.search).get("id");
-  const booking = GuestAPI.bookings.get(id);
+  let booking = GuestAPI.bookings.get(id);
+  if (!booking && id) booking = await GuestAPI.bookings.fetchOne(id);
   if (!booking) {
     root.innerHTML = `<section class="section"><div class="container">${accountNav("account-bookings.html")}${emptyState("Booking not found", "This reservation is not linked to your guest session.", "account-bookings.html", "Back to bookings")}</div></section>`;
     return;
@@ -184,8 +200,11 @@ function initAccountBookingDetail() {
           <li>Stay: ${escapeHtml(booking.checkIn)} → ${escapeHtml(booking.checkOut)}</li>
           <li>Nights: ${booking.nights}</li>
           <li>Guests: ${booking.adults} adults, ${booking.children} children</li>
-          <li>Subtotal: ${money(booking.subtotal)}</li>
-          <li>Discount: ${money(booking.discount)}</li>
+          ${booking.pricePerNight ? `<li>Price per night: ${money(booking.pricePerNight)}</li>` : ""}
+          <li>Original subtotal: ${money(booking.subtotal)}</li>
+          ${booking.discountPercent ? `<li>Room discount (${booking.discountPercent}%): − ${money(booking.roomDiscount)}</li>` : ""}
+          ${booking.couponDiscount ? `<li>Promo${booking.promo ? ` (${escapeHtml(booking.promo)})` : ""}: − ${money(booking.couponDiscount)}</li>` : ""}
+          ${booking.discount ? `<li>Discounted subtotal: ${money(roundMoney(booking.subtotal - booking.discount))}</li>` : ""}
           <li>Tax: ${money(booking.tax)}</li>
           <li>Service: ${money(booking.serviceCharge)}</li>
           <li>Total: ${money(booking.total)}</li>
@@ -193,8 +212,8 @@ function initAccountBookingDetail() {
         ${["pending", "confirmed"].includes(booking.status) ? `<button class="btn btn-outline" id="cancelBooking" type="button">Cancel booking</button>` : ""}
       </article>
     </div></section>`;
-  document.getElementById("cancelBooking")?.addEventListener("click", () => {
-    const result = GuestAPI.bookings.cancel(booking.id);
+  document.getElementById("cancelBooking")?.addEventListener("click", async () => {
+    const result = await GuestAPI.bookings.cancel(booking.id);
     toast(result.ok ? "Booking cancelled" : result.error);
     if (result.ok) location.reload();
   });
@@ -248,12 +267,25 @@ function initSettingsPage() {
   if (!root) return;
   if (!GuestAPI.auth.requireSession()) return;
   const user = GuestAPI.auth.currentUser();
+  const theme = typeof GuestPrefs !== "undefined" ? GuestPrefs.getTheme() : "light";
   root.innerHTML = `
     <section class="section"><div class="container">
       ${accountNav("account-settings.html")}
       <form class="auth-card" id="settingsForm" style="width:min(640px,100%)">
         <h1>Account settings</h1>
-        <p>Stored with your guest profile on this browser. Staff RMS settings are separate.</p>
+        <p>Profile changes are saved to your resort account.</p>
+        <fieldset class="appearance-fieldset">
+          <legend>Appearance</legend>
+          <p class="hint">Light and dark mode apply across the whole resort website.</p>
+          <div class="appearance-toggle" role="group" aria-label="Theme">
+            <button type="button" class="appearance-option ${theme === "light" ? "active" : ""}" data-theme-pick="light">
+              <i class="fa-solid fa-sun" aria-hidden="true"></i> Light
+            </button>
+            <button type="button" class="appearance-option ${theme === "dark" ? "active" : ""}" data-theme-pick="dark">
+              <i class="fa-solid fa-moon" aria-hidden="true"></i> Dark
+            </button>
+          </div>
+        </fieldset>
         <p class="form-error" id="settingsError"></p>
         <label>Name</label>
         <input class="field" name="name" value="${escapeHtml(user.name)}" required>
@@ -268,10 +300,22 @@ function initSettingsPage() {
         <button class="btn btn-primary" type="submit">Save settings</button>
       </form>
     </div></section>`;
-  document.getElementById("settingsForm")?.addEventListener("submit", (e) => {
+  root.querySelectorAll("[data-theme-pick]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const pick = btn.dataset.themePick;
+      if (typeof GuestPrefs !== "undefined" && pick) {
+        GuestPrefs.setTheme(pick);
+        root.querySelectorAll("[data-theme-pick]").forEach((el) => {
+          el.classList.toggle("active", el.dataset.themePick === GuestPrefs.getTheme());
+        });
+      }
+    });
+  });
+
+  document.getElementById("settingsForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
-    const result = GuestAPI.auth.updateProfile({
+    const result = await GuestAPI.auth.updateProfile({
       name: data.name,
       email: data.email,
       phone: data.phone,
@@ -287,7 +331,7 @@ function initSettingsPage() {
       toast(result.error);
       return;
     }
-    toast("Settings saved on this device");
+    toast("Settings saved");
     mountShell();
   });
 }

@@ -411,6 +411,12 @@ function _mkRoom(o) {
     resortId: o.resortId,
     description: o.description,
     pricePerNight: o.pricePerNight,
+    discountPercent: o.discountPercent ?? 0,
+    discountedPricePerNight:
+      o.discountedPricePerNight ??
+      (o.discountPercent
+        ? Math.round(o.pricePerNight * (1 - (o.discountPercent ?? 0) / 100) * 100) / 100
+        : o.pricePerNight),
     capacity: o.capacity,
     adults: o.adults,
     children: o.children,

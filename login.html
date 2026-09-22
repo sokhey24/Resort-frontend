@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login · Solara Resort</title>
   <script src="script/preferences-init.js"></script>
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <script src="script/solara-config.js"></script>
+  <link rel="stylesheet" href="CSS_Style/theme.css">
+  <link rel="stylesheet" href="CSS_Style/pages.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -15,12 +16,12 @@
   <div class="auth-wrap">
     <form class="auth-card" id="loginForm">
       <h1>Guest login</h1>
-      <p>Demo session only. Credentials stay in this browser and are not Sanctum tokens.</p>
+      <p>Sign in with your resort guest account (Sanctum). Password must be at least 8 characters.</p>
       <p class="form-error" id="authError"></p>
       <label>Email</label>
       <input class="field" type="email" name="email" required>
       <label>Password</label>
-      <input class="field" type="password" name="password" required>
+      <input class="field" type="password" name="password" minlength="8" required>
       <button class="btn btn-primary" type="submit">Login</button>
       <p style="margin-top:14px">New guest? <a href="register.html">Create an account</a></p>
     </form>

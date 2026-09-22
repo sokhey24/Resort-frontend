@@ -52,7 +52,7 @@ function initContentPages() {
             <img src="${r.image}" alt="${escapeHtml(r.name)}">
             <div class="card-body">
               <h3>${escapeHtml(r.name)}</h3>
-              <p class="price">${money(r.pricePerNight)} / night</p>
+              <p class="price room-price">${roomPriceHtml(r)}</p>
               <a class="btn btn-primary" href="roomdetail.html?id=${encodeURIComponent(r.id)}">View details</a>
             </div>
           </article>`
@@ -240,4 +240,6 @@ function initContentPages() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", initContentPages);
+document.addEventListener("DOMContentLoaded", () => {
+  GuestAPI.ready().finally(initContentPages);
+});

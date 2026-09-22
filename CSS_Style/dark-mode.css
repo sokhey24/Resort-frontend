@@ -1,0 +1,173 @@
+/* Site-wide dark overrides for pages.css and legacy blocks */
+
+html[data-theme="dark"] .service-band .grid-4 .card,
+html[data-theme="dark"] .service-band .service-card,
+html[data-theme="dark"] .service-card,
+html[data-theme="dark"] .service-book-cta,
+html[data-theme="dark"] .rooms-toolbar,
+html[data-theme="dark"] .room-card,
+html[data-theme="dark"] .room-mini,
+html[data-theme="dark"] .detail-copy .booking-widget,
+html[data-theme="dark"] .room-story,
+html[data-theme="dark"] .booking-form,
+html[data-theme="dark"] .summary-card,
+html[data-theme="dark"] .info-card,
+html[data-theme="dark"] .booking-main article,
+html[data-theme="dark"] .payment-methods,
+html[data-theme="dark"] .khqr-card,
+html[data-theme="dark"] .khqr-side,
+html[data-theme="dark"] .checkout-steps,
+html[data-theme="dark"] .about-panel,
+html[data-theme="dark"] .contact-card,
+html[data-theme="dark"] .map-card,
+html[data-theme="dark"] .faq-item,
+html[data-theme="dark"] .menu-card,
+html[data-theme="dark"] .activity-card,
+html[data-theme="dark"] .gallery-item,
+html[data-theme="dark"] .stat-card {
+  background: var(--surface);
+  border-color: var(--card-border);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .service-icon,
+html[data-theme="dark"] .room-tag {
+  background: var(--accent-soft);
+  color: var(--primary);
+}
+
+html[data-theme="dark"] .service-band .service-icon {
+  background: var(--surface-muted);
+}
+
+html[data-theme="dark"] .review-card {
+  background: var(--surface-muted);
+  border-color: var(--line);
+}
+
+html[data-theme="dark"] .facts li,
+html[data-theme="dark"] .story-copy,
+html[data-theme="dark"] .review-card p {
+  color: var(--text-soft);
+}
+
+html[data-theme="dark"] .room-card:hover,
+html[data-theme="dark"] .room-mini:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow);
+}
+
+html[data-theme="dark"] .pay-method {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+html[data-theme="dark"] .pay-method.selected,
+html[data-theme="dark"] .pay-method:hover {
+  border-color: var(--primary);
+  background: var(--accent-soft);
+}
+
+html[data-theme="dark"] .khqr-head {
+  background: var(--surface-muted);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .khqr-loading {
+  background: var(--surface-muted);
+  color: var(--muted);
+}
+
+html[data-theme="dark"] .checkout-steps li {
+  background: var(--surface-muted);
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+html[data-theme="dark"] .checkout-steps li.active {
+  background: var(--accent-soft);
+  border-color: var(--primary);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .checkout-steps li.done {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+html[data-theme="dark"] .payment-dialog-overlay {
+  background: var(--overlay-scrim);
+}
+
+html[data-theme="dark"] .payment-dialog {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+html[data-theme="dark"] .payment-dialog h3 {
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .payment-dialog p {
+  color: var(--text-soft);
+}
+
+html[data-theme="dark"] .badge-pending {
+  background: rgba(180, 83, 9, 0.2);
+  color: #fbbf24;
+}
+
+html[data-theme="dark"] .badge-confirmed,
+html[data-theme="dark"] .success-pill {
+  background: rgba(46, 125, 50, 0.25);
+  color: #81c784;
+}
+
+html[data-theme="dark"] .badge-cancelled {
+  background: rgba(180, 35, 24, 0.25);
+  color: #f87171;
+}
+
+html[data-theme="dark"] .badge-checked_in,
+html[data-theme="dark"] .badge-checked-in {
+  background: rgba(21, 101, 192, 0.25);
+  color: #64b5f6;
+}
+
+html[data-theme="dark"] .badge-checked_out,
+html[data-theme="dark"] .badge-completed {
+  background: rgba(69, 90, 100, 0.35);
+  color: #b0bec5;
+}
+
+html[data-theme="dark"] .sb-step {
+  background: var(--surface);
+}
+
+html[data-theme="dark"] .resort-card:hover {
+  box-shadow: var(--shadow);
+}
+
+html[data-theme="dark"] .price-row,
+html[data-theme="dark"] .summary-line {
+  border-color: var(--line);
+}
+
+html[data-theme="dark"] .appearance-option {
+  border-color: var(--line);
+  background: var(--surface-muted);
+}
+
+html[data-theme="dark"] .appearance-option.active {
+  border-color: var(--primary);
+  background: var(--accent-soft);
+}
+
+html[data-theme="dark"] .overlay-card .caption,
+html[data-theme="dark"] .hero-banner,
+html[data-theme="dark"] .page-hero,
+html[data-theme="dark"] .service-band {
+  color: #fff;
+}

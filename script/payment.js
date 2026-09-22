@@ -1,7 +1,6 @@
 /* ------------------------------------------------------------------ *
- * Payment step (frontend simulation only — no real gateway).
- * Reads the booking draft, renders payment methods and a per-method
- * UI, then creates the booking and moves to the confirmation page.
+ * Payment step — KHQR follows Payment_process/bakong-ecom (poll + status).
+ * Booking totals and KHQR amounts come from Web_Resort_api only.
  * ------------------------------------------------------------------ */
 
 const PAYMENT_METHODS = [
@@ -13,7 +12,67 @@ const PAYMENT_METHODS = [
   { id: "pay-at-resort", name: "Pay at Resort", icon: "fa-hotel", note: "Pay on arrival" }
 ];
 
-let paymentState = { method: "card", quote: null, draft: null, qrTimer: null, qrStatus: "pending" };
+let paymentState = {
+  method: "card",
+  quote: null,
+  draft: null,
+  booking: null,
+  khqrPayment: null,
+  khqrPoll: null,
+  qrTimer: null,
+  qrStatus: "pending",
+  khqrStopped: false,
+  khqrVerifyInFlight: false,
+  khqrSuccessShown: false
+};
+
+let paymentPageUnloadBound = false;
+
+function bindPaymentPageUnload() {
+  if (paymentPageUnloadBound) return;
+  paymentPageUnloadBound = true;
+  const stopAll = () => {
+    paymentState.khqrStopped = true;
+    stopKhqrPoll();
+    stopQrTimer();
+  };
+  window.addEventListener("pagehide", stopAll);
+  window.addEventListener("beforeunload", stopAll);
+}
+
+/**
+ * Modal dialog for payment outcomes (success / error / info).
+ */
+function showPaymentDialog({ type = "info", title, message, okLabel = "OK", onOk }) {
+  if (type === "success" && paymentState.khqrSuccessShown) return;
+  if (type === "success") paymentState.khqrSuccessShown = true;
+  document.getElementById("paymentDialog")?.remove();
+  const icons = {
+    success: "fa-circle-check",
+    error: "fa-circle-xmark",
+    info: "fa-circle-info",
+    warning: "fa-triangle-exclamation"
+  };
+  const overlay = document.createElement("div");
+  overlay.id = "paymentDialog";
+  overlay.className = "payment-dialog-overlay";
+  overlay.innerHTML = `
+    <div class="payment-dialog" role="dialog" aria-modal="true" aria-labelledby="paymentDialogTitle">
+      <div class="payment-dialog-icon ${escapeHtml(type)}"><i class="fa-solid ${icons[type] || icons.info}" aria-hidden="true"></i></div>
+      <h3 id="paymentDialogTitle">${escapeHtml(title)}</h3>
+      <p>${escapeHtml(message)}</p>
+      <button type="button" class="btn btn-primary" id="paymentDialogOk">${escapeHtml(okLabel)}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  const close = () => {
+    overlay.remove();
+    if (typeof onOk === "function") onOk();
+  };
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  document.getElementById("paymentDialogOk").addEventListener("click", close);
+}
 
 function fakeQrSvg(seed) {
   // Deterministic pseudo-random QR-like grid, purely decorative.
@@ -50,11 +109,14 @@ function renderPaymentSummary() {
     <p class="hint">${q.adults} adult(s), ${q.children} child(ren)</p>
     <div class="price-lines">
       <div class="price-line"><span>${money(q.room.pricePerNight)} × ${q.nights}</span><span>${money(q.subtotal)}</span></div>
-      ${q.discount ? `<div class="price-line discount"><span>Discount${q.promo ? ` (${escapeHtml(q.promo)})` : ""}</span><span>− ${money(q.discount)}</span></div>` : ""}
+      ${q.roomDiscount ? `<div class="price-line discount"><span>Room discount (${q.discountPercent}%)</span><span>− ${money(q.roomDiscount)}</span></div>` : ""}
+      ${q.couponDiscount ? `<div class="price-line discount"><span>Promo${q.promo ? ` (${escapeHtml(q.promo)})` : ""}</span><span>− ${money(q.couponDiscount)}</span></div>` : ""}
+      ${q.discount ? `<div class="price-line"><span>Discounted subtotal</span><span>${money(q.afterDiscount)}</span></div>` : ""}
       <div class="price-line"><span>Service charge</span><span>${money(q.serviceCharge)}</span></div>
       <div class="price-line"><span>Tax</span><span>${money(q.tax)}</span></div>
       <div class="price-line total"><span>Total</span><span>${money(q.total)}</span></div>
-    </div>`;
+    </div>
+    <p class="hint">${q.authoritative ? "Total confirmed by the resort system." : "Showing an estimate — the resort system confirms the final total."}</p>`;
 }
 
 function renderMethodCards() {
@@ -71,6 +133,7 @@ function renderMethodCards() {
     btn.addEventListener("click", () => {
       paymentState.method = btn.dataset.method;
       stopQrTimer();
+      stopKhqrPoll();
       renderMethodCards();
       renderMethodPanel();
     });
@@ -93,6 +156,167 @@ function stopQrTimer() {
     clearInterval(paymentState.qrTimer);
     paymentState.qrTimer = null;
   }
+}
+
+function stopKhqrPoll() {
+  if (paymentState.khqrPoll) {
+    clearInterval(paymentState.khqrPoll);
+    paymentState.khqrPoll = null;
+  }
+}
+
+/** Prefer server SVG from Web_Resort_api (Payment_process/bakong-ecom QrCode::generate). */
+function renderKhqrInto(container, payment) {
+  if (!container || !payment) return;
+  const svg = payment.qr_svg;
+  const payload = payment.qr_payload;
+  if (svg && typeof svg === "string" && svg.includes("<svg")) {
+    container.innerHTML = `<div class="khqr-img khqr-svg-wrap" aria-label="Scan to pay with KHQR">${svg}</div>`;
+    const el = container.querySelector("svg");
+    if (el) {
+      el.setAttribute("width", "220");
+      el.setAttribute("height", "220");
+    }
+    return;
+  }
+  if (!payload) return;
+  container.innerHTML = '<canvas class="khqr-img" width="220" height="220" aria-label="Scan to pay with KHQR"></canvas>';
+  const canvas = container.querySelector("canvas");
+  if (typeof QRCode === "undefined") {
+    container.innerHTML = `<p class="hint">QR library failed to load. Refresh the page or check your connection.</p>`;
+    return;
+  }
+  QRCode.toCanvas(
+    canvas,
+    String(payload),
+    { width: 220, margin: 2, errorCorrectionLevel: "M" },
+    (err) => {
+      if (err) {
+        container.innerHTML = `<p class="hint">Could not render QR. Try generating a new code.</p>`;
+      }
+    }
+  );
+}
+
+async function ensureBookingCreated() {
+  if (paymentState.booking) return paymentState.booking;
+  const draft = paymentState.draft;
+  if (!draft) return null;
+  const result = await GuestAPI.bookings.create({ ...draft, paymentMethod: paymentState.method });
+  if (!result.ok) {
+    const msg = (result.errors && result.errors[0]) || result.error || "Could not create booking.";
+    showPaymentDialog({ type: "error", title: "Booking failed", message: msg });
+    return null;
+  }
+  paymentState.booking = result.booking;
+  return paymentState.booking;
+}
+
+async function loadKhqrPayment(gateway) {
+  const booking = await ensureBookingCreated();
+  if (!booking?.id) return null;
+  const res = await GuestAPI.payments.createKhqr(booking.id, gateway);
+  if (!res.ok) {
+    showPaymentDialog({
+      type: "error",
+      title: "KHQR unavailable",
+      message: res.error || "Could not generate the payment QR. Check Bakong settings on the API server."
+    });
+    return null;
+  }
+  paymentState.khqrPayment = res.payment;
+  paymentState.qrStatus = "pending";
+  paymentState.khqrStopped = false;
+  paymentState.khqrSuccessShown = false;
+  return res.payment;
+}
+
+function stopKhqrPollingTerminal() {
+  paymentState.khqrStopped = true;
+  stopKhqrPoll();
+  stopQrTimer();
+}
+
+function showKhqrSuccessDialog(message) {
+  if (paymentState.khqrSuccessShown) return;
+  stopKhqrPollingTerminal();
+  setQrStatus("paid");
+  const statusEl = document.getElementById("payment-status");
+  if (statusEl) statusEl.textContent = message || "Payment confirmed.";
+  showPaymentDialog({
+    type: "success",
+    title: "Payment confirmed",
+    message: message || "Your KHQR payment was verified. You will receive a booking confirmation next.",
+    okLabel: "Continue",
+    onOk: () => {
+      GuestAPI.draft.clear();
+      sessionStorage.setItem("solara_last_booking", JSON.stringify(paymentState.booking));
+      location.href = "booking-confirm.html";
+    }
+  });
+}
+
+/** Poll Bakong via API — mirrors Payment_process/bakong-ecom checkout.blade.php */
+function startKhqrPoll(payment) {
+  stopKhqrPoll();
+  paymentState.khqrStopped = false;
+  paymentState.khqrVerifyInFlight = false;
+  const md5 = payment?.khqr_md5;
+  const statusEl = () => document.getElementById("payment-status");
+
+  async function check() {
+    if (paymentState.khqrStopped || paymentState.khqrVerifyInFlight) return;
+    paymentState.khqrVerifyInFlight = true;
+    try {
+      const res = await GuestAPI.payments.verifyKhqr(md5 || payment.id);
+      if (paymentState.khqrStopped) return;
+      if (!res.ok) {
+        if (res.status === "expired" || res.status === "failed" || res.status === "invalid") {
+          stopKhqrPollingTerminal();
+          setQrStatus("failed");
+          if (statusEl()) statusEl().textContent = res.error || res.message;
+          showPaymentDialog({
+            type: "error",
+            title: "Payment not completed",
+            message: res.error || res.message || "This QR could not be settled. Generate a new QR or choose another method."
+          });
+          return;
+        }
+        if (statusEl()) statusEl().textContent = res.error || "Network problem while checking payment.";
+        return;
+      }
+      if (res.paid) {
+        showKhqrSuccessDialog(res.message);
+        return;
+      }
+      if (res.status === "expired" || res.status === "failed" || res.status === "invalid") {
+        stopKhqrPollingTerminal();
+        setQrStatus("failed");
+        if (statusEl()) statusEl().textContent = res.message;
+        showPaymentDialog({
+          type: "error",
+          title: "Payment not completed",
+          message: res.message || "This QR could not be settled. Generate a new QR or choose another method."
+        });
+        return;
+      }
+      if (statusEl()) {
+        const qrExpiredUi = statusEl().dataset.expiredNotice === "1";
+        if (res.status === "api_error") {
+          statusEl().textContent = res.message;
+        } else if (qrExpiredUi) {
+          statusEl().textContent = res.message || "QR timer ended — still checking for your payment…";
+        } else {
+          statusEl().textContent = "Waiting for payment…";
+        }
+      }
+    } finally {
+      paymentState.khqrVerifyInFlight = false;
+    }
+  }
+
+  paymentState.khqrPoll = setInterval(check, 3000);
+  check();
 }
 
 function renderMethodPanel() {
@@ -148,30 +372,43 @@ function renderMethodPanel() {
       <div class="khqr-panel">
         <div class="khqr-card">
           <div class="khqr-head"><span>${bank} KHQR</span><span>Solara Resort</span></div>
-          ${fakeQrSvg(paymentState.draft.roomId + q.total)}
+          <div id="khqrImage" class="khqr-loading"><p>Preparing secure QR…</p></div>
           <p class="khqr-amount">${total}</p>
-          <p class="khqr-hint">Scan with your ${bank} mobile app</p>
+          <p class="khqr-hint">Scan with your ${bank} mobile app. Amount is set by the resort system.</p>
         </div>
         <div class="khqr-side">
           <p class="khqr-status-row">Payment status: ${statusPill(paymentState.qrStatus)}</p>
+          <p id="payment-status">Waiting for payment…</p>
           <p class="khqr-timer">Expires in <strong id="qrCountdown">05:00</strong></p>
-          <button class="btn btn-primary btn-block" type="button" id="simulatePay">Simulate scan &amp; pay</button>
-          <button class="btn btn-outline btn-block" type="button" id="qrRefresh">Refresh QR</button>
-          <p class="hint">Placeholder QR only. No funds are moved.</p>
+          <button class="btn btn-outline btn-block" type="button" id="qrRefresh">Generate new QR</button>
+          <p class="hint">Scan with Bakong — the resort system verifies payment automatically.</p>
         </div>
       </div>`;
-    startQrTimer();
-    document.getElementById("simulatePay").addEventListener("click", () => {
-      setQrStatus("processing");
-      setTimeout(() => {
-        setQrStatus("paid");
-        stopQrTimer();
-        setTimeout(() => finalizeBooking(method), 700);
-      }, 1400);
-    });
-    document.getElementById("qrRefresh").addEventListener("click", () => {
+    (async () => {
+      const pay = await loadKhqrPayment(method);
+      const box = document.getElementById("khqrImage");
+      if (!box) return;
+      if (!pay?.qr_payload) {
+        box.innerHTML = `<p class="hint">Could not load QR. Check Bakong configuration or try again.</p>`;
+        return;
+      }
+      renderKhqrInto(box, pay);
+      startQrTimer(pay.seconds_remaining || 300);
+      startKhqrPoll(pay);
+    })();
+    document.getElementById("qrRefresh").addEventListener("click", async () => {
+      stopKhqrPoll();
+      paymentState.khqrStopped = false;
       setQrStatus("pending");
-      startQrTimer();
+      const st = document.getElementById("payment-status");
+      if (st) st.textContent = "Generating a new QR…";
+      const pay = await loadKhqrPayment(method);
+      const box = document.getElementById("khqrImage");
+      if (box && pay?.qr_payload) {
+        renderKhqrInto(box, pay);
+        startQrTimer(pay.seconds_remaining || 300);
+        startKhqrPoll(pay);
+      }
     });
     return;
   }
@@ -230,20 +467,25 @@ function setQrStatus(status) {
   if (el) el.outerHTML = statusPill(status);
 }
 
-function startQrTimer() {
+function startQrTimer(initialSeconds = 300) {
   stopQrTimer();
-  let remaining = 300;
-  const tick = () => {
+  let remaining = Math.max(0, Number(initialSeconds) || 300);
+  const tick = async () => {
     const el = document.getElementById("qrCountdown");
     if (!el) return stopQrTimer();
     const m = String(Math.floor(remaining / 60)).padStart(2, "0");
     const s = String(remaining % 60).padStart(2, "0");
     el.textContent = `${m}:${s}`;
     if (remaining <= 0) {
+      if (el) el.textContent = "00:00";
       stopQrTimer();
-      setQrStatus("failed");
-      const el2 = document.getElementById("qrCountdown");
-      if (el2) el2.textContent = "00:00";
+      if (paymentState.khqrPayment && !paymentState.khqrStopped) {
+        const st = document.getElementById("payment-status");
+        if (st && !st.dataset.expiredNotice) {
+          st.dataset.expiredNotice = "1";
+          st.textContent = "QR timer ended — still checking for your payment…";
+        }
+      }
       return;
     }
     remaining -= 1;
@@ -253,25 +495,33 @@ function startQrTimer() {
 }
 
 function simulateProcessing(done) {
-  toast("Processing payment…");
+  toast("Processing…");
   setTimeout(done, 1200);
 }
 
-function finalizeBooking(method) {
-  const draft = paymentState.draft;
-  if (!draft) return;
-  const result = GuestAPI.bookings.create({ ...draft, paymentMethod: method });
-  if (!result.ok) {
-    toast((result.errors && result.errors[0]) || result.error || "Could not complete booking.");
-    return;
-  }
-  GuestAPI.draft.clear();
-  location.href = "booking-confirm.html";
+async function finalizeBooking(method) {
+  const booking = await ensureBookingCreated();
+  if (!booking) return;
+  const payAtResort = method === "pay-at-resort" || method === "bank-transfer";
+  showPaymentDialog({
+    type: "success",
+    title: payAtResort ? "Reservation confirmed" : "Booking confirmed",
+    message: payAtResort
+      ? `Reference ${booking.code}. Pay at the resort according to your booking total.`
+      : `Reference ${booking.code}. Your booking is saved in the resort system.`,
+    okLabel: "View confirmation",
+    onOk: () => {
+      GuestAPI.draft.clear();
+      sessionStorage.setItem("solara_last_booking", JSON.stringify(booking));
+      location.href = "booking-confirm.html";
+    }
+  });
 }
 
-function initPaymentPage() {
+async function initPaymentPage() {
   const layout = document.getElementById("paymentLayout");
   if (!layout) return;
+  bindPaymentPageUnload();
 
   const draft = GuestAPI.draft.get();
   if (!draft || !draft.roomId) {
@@ -282,7 +532,7 @@ function initPaymentPage() {
     location.href = `login.html?next=${encodeURIComponent("payment.html")}`;
     return;
   }
-  const quote = GuestAPI.quote({
+  const quote = await GuestAPI.quoteAuthoritative({
     roomId: draft.roomId,
     checkIn: draft.checkIn,
     checkOut: draft.checkOut,
@@ -302,4 +552,6 @@ function initPaymentPage() {
   renderMethodPanel();
 }
 
-document.addEventListener("DOMContentLoaded", initPaymentPage);
+document.addEventListener("DOMContentLoaded", () => {
+  GuestAPI.ready().finally(initPaymentPage);
+});

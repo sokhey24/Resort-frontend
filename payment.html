@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment · Solara Resort</title>
   <script src="script/preferences-init.js"></script>
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <script src="script/solara-config.js"></script>
+  <link rel="stylesheet" href="CSS_Style/theme.css">
+  <link rel="stylesheet" href="CSS_Style/pages.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -26,7 +27,7 @@
         <div class="booking-main">
           <article class="info-card">
             <h2>Payment method</h2>
-            <p class="hint">Choose how you'd like to pay. This is a demo — no real payment is processed.</p>
+            <p class="hint">KHQR uses Bakong (same flow as Payment_process). Card and other methods reserve your booking; pay at the resort or front desk.</p>
             <div class="payment-methods" id="paymentMethods"></div>
             <div class="payment-panel" id="paymentPanel"></div>
           </article>
@@ -43,6 +44,7 @@
   <script src="script/preferences.js"></script>
   <script src="script/i18n.js"></script>
   <script src="script/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script src="script/payment.js"></script>
 </body>
 </html>

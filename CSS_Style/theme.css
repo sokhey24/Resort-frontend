@@ -1,4 +1,7 @@
+@import url("dark-mode.css");
+
 :root {
+  color-scheme: light;
   --primary: #1e88e5;
   --primary-dark: #1565c0;
   --gold: #c9a24a;
@@ -15,6 +18,15 @@
   --nav-link: #777;
   --nav-link-active: #000;
   --icon-btn-bg: #eef6ff;
+  --card-border: #d7dee8;
+  --input-border: #cfe3f8;
+  --accent-soft: #eef6ff;
+  --text-soft: #444444;
+  --footer-bg: #f7f7f7;
+  --footer-accent: #1b4f72;
+  --overlay-scrim: rgba(10, 18, 32, 0.45);
+  --hero-scrim: linear-gradient(90deg, rgba(8, 18, 32, 0.72), rgba(8, 18, 32, 0.25));
+  --on-primary: #ffffff;
 }
 
 html[data-theme="dark"] {
@@ -32,6 +44,14 @@ html[data-theme="dark"] {
   --nav-link: #9aa7b5;
   --nav-link-active: #f0f6fc;
   --icon-btn-bg: #21262d;
+  --card-border: #3d444d;
+  --input-border: #484f58;
+  --accent-soft: #21262d;
+  --text-soft: #b6c2cf;
+  --footer-bg: #010409;
+  --footer-accent: #64b5f6;
+  --overlay-scrim: rgba(0, 0, 0, 0.55);
+  --hero-scrim: linear-gradient(90deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.35));
   color-scheme: dark;
 }
 .nav-lang,
@@ -65,6 +85,10 @@ button, input, select, textarea { font-family: inherit; }
   background: var(--white);
   border-bottom: 1px solid var(--line);
   box-shadow: 0 4px 18px rgba(16, 24, 40, 0.06);
+}
+
+html[data-theme="dark"] .site-header {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .site-nav {
@@ -421,11 +445,11 @@ html[data-theme="dark"] .icon-btn {
 
 .btn-primary { background: var(--primary); color: #fff; }
 .btn-primary:hover { background: var(--primary-dark); }
-.btn-ghost { background: #eef6ff; color: var(--primary-dark); }
+.btn-ghost { background: var(--accent-soft); color: var(--primary-dark); }
 .btn-dark { background: #16324f; color: #fff; }
 .btn-outline {
   background: transparent;
-  border: 1px solid #cfd8e3;
+  border: 1px solid var(--line);
   color: var(--ink);
 }
 .btn-gold { background: var(--gold); color: #fff; }
@@ -462,7 +486,7 @@ body:not(.guest-signed-in) .nav-book-btn { display: none !important; }
 .hero-banner .scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(8, 18, 32, 0.72), rgba(8, 18, 32, 0.25));
+  background: var(--hero-scrim);
 }
 
 .hero-copy {
@@ -499,7 +523,7 @@ body:not(.guest-signed-in) .nav-book-btn { display: none !important; }
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(10, 18, 32, 0.45);
+  background: var(--overlay-scrim);
 }
 
 .page-hero h1 {
@@ -542,7 +566,7 @@ body:not(.guest-signed-in) .nav-book-btn { display: none !important; }
 
 .price { color: var(--primary-dark); font-weight: 700; }
 
-.site-footer { background: #f7f7f7; margin-top: 40px; }
+.site-footer { background: var(--footer-bg); margin-top: 40px; }
 .footer-top {
   background: #1c1c1c;
   color: #fff;
@@ -566,10 +590,11 @@ body:not(.guest-signed-in) .nav-book-btn { display: none !important; }
 .field, textarea, select {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #cfe3f8;
+  border: 1px solid var(--input-border);
   border-radius: 10px;
   outline: none;
   background: var(--surface);
+  color: var(--ink);
 }
 textarea { min-height: 110px; resize: vertical; margin-bottom: 12px; }
 .field:focus, textarea:focus, select:focus { border-color: var(--primary); }
@@ -583,16 +608,16 @@ textarea { min-height: 110px; resize: vertical; margin-bottom: 12px; }
   gap: 28px;
 }
 .footer-grid h3 { margin-bottom: 14px; font-size: 18px; }
-.footer-grid p, .footer-grid a { color: #555; font-size: 14px; line-height: 1.8; text-decoration: none; }
+.footer-grid p, .footer-grid a { color: var(--muted); font-size: 14px; line-height: 1.8; text-decoration: none; }
 .chip-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip-links a {
-  border: 1px solid #cfcfcf;
+  border: 1px solid var(--line);
   padding: 6px 12px;
   border-radius: 6px;
-  color: #111;
+  color: var(--ink);
 }
-.social { display: flex; gap: 14px; font-size: 20px; color: #1b4f72; margin: 12px 0 16px; }
-.pay { display: flex; gap: 12px; font-size: 28px; color: #1b4f72; margin-top: 8px; }
+.social { display: flex; gap: 14px; font-size: 20px; color: var(--footer-accent); margin: 12px 0 16px; }
+.pay { display: flex; gap: 12px; font-size: 28px; color: var(--footer-accent); margin-top: 8px; }
 
 .toast {
   position: fixed;
@@ -682,6 +707,7 @@ textarea { min-height: 110px; resize: vertical; margin-bottom: 12px; }
 .pad { padding: 22px; }
 .page-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
 .empty-state { text-align: center; padding: 40px 16px; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); }
+.empty-state[hidden] { display: none !important; }
 .empty-state h3 { margin-bottom: 8px; }
 .empty-state p { color: var(--muted); margin-bottom: 18px; }
 .form-error { color: #b42318; font-size: 14px; margin: 8px 0; }
@@ -708,7 +734,7 @@ textarea { min-height: 110px; resize: vertical; margin-bottom: 12px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .promo-band { background: #16324f; color: #fff; text-align: center; padding: 48px 16px; }
 .amen-line, .avail, .code-line { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
-.amen-list { margin: 8px 0 18px 18px; color: #444; }
+.amen-list { margin: 8px 0 18px 18px; color: var(--text-soft); }
 .gallery-main { position: relative; }
 .gallery-nav {
   position: absolute;
@@ -740,12 +766,14 @@ textarea { min-height: 110px; resize: vertical; margin-bottom: 12px; }
   margin-bottom: 18px;
 }
 
-html[data-theme="dark"] .site-footer { background: #0d1117; }
-html[data-theme="dark"] .footer-grid p,
-html[data-theme="dark"] .footer-grid a { color: var(--muted); }
-html[data-theme="dark"] .chip-links a { color: var(--ink); border-color: var(--line); }
-html[data-theme="dark"] .btn-ghost { background: #21262d; }
-.social a { color: #1b4f72; }
+html[data-theme="dark"] .btn-ghost { background: var(--accent-soft); }
+html[data-theme="dark"] .btn-outline { border-color: var(--line); }
+html[data-theme="dark"] .gallery-nav {
+  background: rgba(22, 27, 34, 0.92);
+  color: var(--ink);
+}
+html[data-theme="dark"] .modal { background: rgba(0, 0, 0, 0.72); }
+.social a { color: var(--footer-accent); }
 
 @media (max-width: 980px) {
   .menu-toggle { display: grid; place-items: center; }

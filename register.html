@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register · Solara Resort</title>
   <script src="script/preferences-init.js"></script>
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <script src="script/solara-config.js"></script>
+  <link rel="stylesheet" href="CSS_Style/theme.css">
+  <link rel="stylesheet" href="CSS_Style/pages.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -15,7 +16,7 @@
   <div class="auth-wrap">
     <form class="auth-card" id="registerForm">
       <h1>Create a guest account</h1>
-      <p>No API yet. Your profile is stored in this browser for the guest journey only.</p>
+      <p>Creates a guest account on the resort API. Password must be at least 8 characters.</p>
       <p class="form-error" id="authError"></p>
       <label>Full name</label>
       <input class="field" name="name" required>
@@ -24,9 +25,9 @@
       <label>Phone</label>
       <input class="field" name="phone" required>
       <label>Password</label>
-      <input class="field" type="password" name="password" minlength="6" required>
+      <input class="field" type="password" name="password" minlength="8" required>
       <label>Confirm password</label>
-      <input class="field" type="password" name="confirm" minlength="6" required>
+      <input class="field" type="password" name="confirm" minlength="8" required>
       <button class="btn btn-primary" type="submit">Register</button>
       <p style="margin-top:14px">Already registered? <a href="login.html">Login</a></p>
     </form>

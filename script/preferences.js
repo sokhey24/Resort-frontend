@@ -5,7 +5,10 @@ const GuestPrefs = {
   read() {
     try {
       const raw = localStorage.getItem(this.storageKey);
-      return { ...this.defaults, ...(raw ? JSON.parse(raw) : {}) };
+      const merged = { ...this.defaults, ...(raw ? JSON.parse(raw) : {}) };
+      if (merged.lang === "KH") merged.lang = "km";
+      if (merged.theme !== "dark") merged.theme = "light";
+      return merged;
     } catch {
       return { ...this.defaults };
     }
@@ -72,6 +75,10 @@ const GuestPrefs = {
     document.documentElement.setAttribute("data-theme", theme);
     document.body?.classList.toggle("theme-dark", theme === "dark");
     document.documentElement.lang = prefs.lang === "km" ? "km" : "en";
+    const meta = document.querySelector('meta[name="color-scheme"]');
+    if (meta) {
+      meta.setAttribute("content", theme === "dark" ? "dark light" : "light dark");
+    }
   },
 
   init() {
@@ -84,10 +91,13 @@ const GuestPrefs = {
         prefs.lang = fromProfile;
       }
     }
-    this.apply(prefs);
     if (!localStorage.getItem(this.storageKey)) {
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        prefs.theme = "dark";
+      }
       localStorage.setItem(this.storageKey, JSON.stringify(prefs));
     }
+    this.apply(prefs);
     this.syncThemeToggle();
     this.syncLangToggle();
   },

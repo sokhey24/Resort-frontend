@@ -46,17 +46,16 @@ function starIcons(count) {
   return `<span class="hotel-stars" aria-label="${count}-star resort">${html}</span>`;
 }
 
+function facilityChipLabel(fid) {
+  const f = GuestAPI.catalog.facility(fid);
+  return `<span class="facility-chip"><i class="fa-solid ${f.icon}" aria-hidden="true"></i> ${escapeHtml(f.name)}</span>`;
+}
+
 // Shared resort card, reused by the home page and the results page.
 function resortCardMarkup(resort, ctx) {
   const context = ctx || searchContext();
   const q = contextQuery(context, { id: resort.id });
-  const facilityChips = resort.facilities
-    .slice(0, 5)
-    .map((fid) => {
-      const f = GuestAPI.catalog.facility(fid);
-      return `<span class="facility-chip"><i class="fa-solid ${f.icon}" aria-hidden="true"></i> ${escapeHtml(f.name)}</span>`;
-    })
-    .join("");
+  const facilityChips = resort.facilities.slice(0, 5).map((fid) => facilityChipLabel(fid)).join("");
   return `
     <article class="resort-card">
       <div class="resort-card-media">
@@ -85,8 +84,7 @@ function resortCardMarkup(resort, ctx) {
         <div class="resort-card-foot">
           <div class="resort-price">
             <span class="price-label">From</span>
-            <strong class="price-value">${money(resort.priceFrom)}</strong>
-            <span class="price-unit">/ night</span>
+            ${typeof resortPriceFromHtml === "function" ? resortPriceFromHtml(resort) : `<div class="price-row"><strong class="price-value">${money(resort.priceFrom)}</strong><span class="price-unit">/ night</span></div>`}
             <span class="price-tax">+ taxes &amp; fees</span>
           </div>
           <div class="resort-actions">
@@ -233,7 +231,33 @@ function renderResortResults(ctx) {
 
   if (!list.length) {
     root.innerHTML = "";
-    if (empty) empty.hidden = false;
+    if (empty) {
+      const catalog = GuestAPI.catalog.resorts();
+      const filtered = readResortFilters();
+      const hasActiveFilters =
+        ctx.destination.trim() ||
+        ctx.resortId ||
+        filtered.types.length ||
+        filtered.facilities.length ||
+        filtered.freeCancel ||
+        filtered.breakfast ||
+        filtered.minRating > 0 ||
+        filtered.price < 350;
+      const apiEmpty = typeof GuestRemote !== "undefined" && GuestRemote.usingApi() && catalog.length === 0;
+      const title = apiEmpty
+        ? "No resorts available yet"
+        : hasActiveFilters
+          ? "No resorts match your filters"
+          : "No resorts available yet";
+      const detail = apiEmpty
+        ? "Resorts will appear here once they are published from the management dashboard."
+        : hasActiveFilters
+          ? "Try widening your budget, removing facility filters, or searching a different destination."
+          : "Check back soon or contact us for availability.";
+      empty.querySelector("h3").textContent = title;
+      empty.querySelector("p").textContent = detail;
+      empty.hidden = false;
+    }
     if (more) more.hidden = true;
     return;
   }
@@ -302,7 +326,7 @@ function roomTypeRow(room, ctx) {
       </div>
       <div class="roomtype-buy">
         ${lowStock ? `<p class="low-stock">Only ${room.roomsLeft} left!</p>` : ""}
-        <p class="roomtype-price"><strong>${money(room.pricePerNight)}</strong><span>/ night</span></p>
+        <p class="roomtype-price room-price">${roomPriceHtml(room, " / night")}</p>
         <p class="price-tax">+ taxes &amp; fees</p>
         <a class="btn btn-primary" href="booking.html?${q}">Select Room</a>
         <a class="btn btn-ghost" href="roomdetail.html?id=${encodeURIComponent(room.id)}">Details</a>
@@ -409,7 +433,7 @@ function initResortDetailPage() {
       <aside class="resort-detail-aside">
         <div class="book-cta-card">
           <p class="price-label">From</p>
-          <p class="cta-price"><strong>${money(resort.priceFrom)}</strong> / night</p>
+          <div class="cta-price resort-price">${typeof resortPriceFromHtml === "function" ? resortPriceFromHtml(resort) : `<div class="price-row"><strong class="price-value">${money(resort.priceFrom)}</strong><span class="price-unit">/ night</span></div>`}</div>
           <p class="price-tax">+ taxes &amp; fees</p>
           <a class="btn btn-primary" href="#rooms">See available rooms</a>
           <ul class="cta-points">
@@ -445,13 +469,48 @@ function initResortDetailPage() {
   // Room grid, refreshed when dates/guests change
   const listEl = document.getElementById("roomTypeList");
   const dateForm = document.getElementById("detailDates");
+  let roomLoadToken = 0;
   const drawRooms = () => {
     const data = Object.fromEntries(new FormData(dateForm).entries());
-    const liveCtx = { ...ctx, ...data, adults: Number(data.adults), children: Number(data.children) };
-    const rooms = resort.rooms;
-    listEl.innerHTML = rooms.length
-      ? rooms.map((r) => roomTypeRow(r, liveCtx)).join("")
-      : emptyState("No rooms listed", "This resort has no room types in the catalogue yet.", "resorts.html", "Back to resorts");
+    const liveCtx = {
+      ...ctx,
+      ...data,
+      adults: Number(data.adults) || 1,
+      children: Number(data.children) || 0
+    };
+    const token = ++roomLoadToken;
+    listEl.innerHTML = '<p class="hint">Loading rooms…</p>';
+
+    const renderList = (rooms) => {
+      if (token !== roomLoadToken) return;
+      listEl.innerHTML = rooms.length
+        ? rooms.map((r) => roomTypeRow(r, liveCtx)).join("")
+        : emptyState(
+            "No rooms available",
+            "Add rooms in the dashboard for this resort, set status to available, and match your dates and guest count.",
+            "resorts.html",
+            "Back to resorts"
+          );
+    };
+
+    const useLiveApi =
+      typeof GuestRemote !== "undefined" &&
+      GuestRemote.usingApi &&
+      GuestRemote.usingApi();
+
+    if (useLiveApi && id) {
+      GuestAPI.resortRoomCards(id, {
+        checkIn: liveCtx.checkIn,
+        checkOut: liveCtx.checkOut,
+        adults: liveCtx.adults,
+        children: liveCtx.children
+      })
+        .then((rooms) => renderList(rooms))
+        .catch(() => renderList(resort.rooms || []));
+      return;
+    }
+
+    renderList(resort.rooms || []);
   };
   dateForm?.addEventListener("input", drawRooms);
   dateForm?.addEventListener("change", drawRooms);
@@ -464,6 +523,8 @@ function initResortDetailPage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initResortsPage();
-  initResortDetailPage();
+  GuestAPI.ready().finally(() => {
+    initResortsPage();
+    initResortDetailPage();
+  });
 });

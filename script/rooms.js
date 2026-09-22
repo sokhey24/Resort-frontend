@@ -24,7 +24,7 @@ function roomCard(room) {
         <p class="amen-line">${escapeHtml(amen)}</p>
         <p class="avail">${room.available ? "Available in catalogue" : "Not listed as available"}</p>
         <div class="room-foot">
-          <strong>${money(room.pricePerNight)} / night</strong>
+          <strong class="room-price">${roomPriceHtml(room)}</strong>
           <div class="room-actions">
             <a class="btn btn-outline" href="roomdetail.html?id=${encodeURIComponent(room.id)}">View details</a>
             <a class="btn btn-primary" href="booking.html?room=${encodeURIComponent(room.id)}">Book now</a>
@@ -59,7 +59,9 @@ function applyRoomFilters() {
   const q = f.search.toLowerCase().trim();
   list = list.filter((room) => {
     const matchName = !q || room.name.toLowerCase().includes(q) || room.roomType.toLowerCase().includes(q) || room.code.toLowerCase().includes(q);
-    const matchPrice = room.pricePerNight >= f.minPrice && room.pricePerNight <= f.maxPrice;
+    // Filter and sort on what the guest actually pays.
+    const payable = Number(room.discountedPricePerNight ?? room.pricePerNight);
+    const matchPrice = payable >= f.minPrice && payable <= f.maxPrice;
     const matchType = !f.type || room.roomType === f.type;
     const matchCap = !f.capacity || room.capacity >= f.capacity;
     const matchAdults = !f.adults || room.adults >= f.adults;
@@ -69,8 +71,9 @@ function applyRoomFilters() {
     const matchDates = !f.checkIn || !f.checkOut || GuestAPI.isRoomFree(room.id, f.checkIn, f.checkOut);
     return matchName && matchPrice && matchType && matchCap && matchAdults && matchChildren && matchAmenity && matchFeatured && matchDates;
   });
-  if (f.sort === "price-asc") list.sort((a, b) => a.pricePerNight - b.pricePerNight);
-  if (f.sort === "price-desc") list.sort((a, b) => b.pricePerNight - a.pricePerNight);
+  const payableOf = (r) => Number(r.discountedPricePerNight ?? r.pricePerNight);
+  if (f.sort === "price-asc") list.sort((a, b) => payableOf(a) - payableOf(b));
+  if (f.sort === "price-desc") list.sort((a, b) => payableOf(b) - payableOf(a));
   if (f.sort === "rating") list.sort((a, b) => b.rating - a.rating);
   return list;
 }
@@ -228,7 +231,7 @@ function initRoomDetail() {
       </div>
       <p>${escapeHtml(room.description)}</p>
       <ul class="facts">
-        <li><i class="fa-solid fa-tag"></i> ${money(room.pricePerNight)} per night</li>
+        <li class="room-price"><i class="fa-solid fa-tag"></i> ${roomPriceHtml(room, " per night")}</li>
         <li><i class="fa-solid fa-users"></i> Sleeps ${room.capacity} (${room.adults} adults, ${room.children} children)</li>
         <li><i class="fa-solid fa-bed"></i> ${escapeHtml(room.bedType)}</li>
         <li><i class="fa-solid fa-ruler-combined"></i> ${escapeHtml(room.size)}</li>
@@ -288,6 +291,8 @@ function initRoomDetail() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initRoomsPage();
-  initRoomDetail();
+  GuestAPI.ready().finally(() => {
+    initRoomsPage();
+    initRoomDetail();
+  });
 });
